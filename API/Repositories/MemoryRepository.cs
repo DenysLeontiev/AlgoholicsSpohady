@@ -33,6 +33,7 @@ namespace API.Repositories
 
         public async Task<Memory> GetMemoryByIdAsync(string id, bool trackChanges)
         {
+            return await _context.Memories.Include(x => x.Photos).Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == id);
             return await FindByCondition(m => m.Id.Equals(id), trackChanges);
         }
     }

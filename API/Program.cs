@@ -4,7 +4,10 @@ using API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews()
+    .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -12,6 +15,7 @@ builder.Services.ConfigureDbContext(builder.Configuration);
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureAuthentification(builder.Configuration);
 builder.Services.ConfigureServices();
+builder.Services.ConfigureCloudinaryAccount(builder.Configuration);
 
 var app = builder.Build();
 

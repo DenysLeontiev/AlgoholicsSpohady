@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
 using API.Repositories;
+using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +43,11 @@ namespace API.ExtensionMethods
 
         public static void ConfigureAuthentification(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(cfg =>
+            {
+                cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
                 .AddJwtBearer(opts =>
                 {
                     opts.TokenValidationParameters = new TokenValidationParameters
@@ -56,9 +62,16 @@ namespace API.ExtensionMethods
 
         public static void ConfigureServices(this IServiceCollection services)
         {
-            services.AddScoped<ITokenHandler, API.Services.TokenHandler>();
+            services.AddScoped<ITokenHandler, Services.TokenHandler>();
             services.AddScoped<IRepositoryManager, RepositoryManager>();
+            services.AddScoped<IQrCodeGenerator, QrCodeGenerator>();
+            services.AddScoped<IPhotoService, PhotoService>();
             services.AddCors();
+        }
+
+        public static void ConfigureCloudinaryAccount(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<CloudinaryAccount>(configuration.GetSection("CloudinarySettings"));
         }
     }
 }
