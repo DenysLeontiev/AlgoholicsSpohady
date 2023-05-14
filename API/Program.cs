@@ -27,6 +27,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
             }).AddEntityFrameworkStores<DataContext>();
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -34,6 +36,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(builder =>
+{
+    builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200");
+});
 
 app.UseHttpsRedirection();
 
