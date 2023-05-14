@@ -1,0 +1,32 @@
+<div class="container" id="container">
+    <div class="form-container sign-in-container">
+        <form action="#">
+            <h4>Створення аккаунта</h4>
+            <div class="social-container">
+                <a href="#" class="social"><i class="fa fa-github"></i></a>
+                <a href="#" class="social"><i class="fa fa-facebook"></i></a>
+                <a href="#" class="social"><i class="fa fa-instagram"></i></a>
+            </div>
+            <input [(ngModel)]="registerModel.userName" name="userName" type="text" placeholder="Ім'я" />
+            <input [(ngModel)]="registerModel.email" name="email" type="email" placeholder="Email" />
+            <input [(ngModel)]="registerModel.password" name="password" type="password" placeholder="Password" />
+            <button (click)="register()">Зареєструватися</button>
+            <button class="mt-3" (click)="cancelRegister()">Назад</button>
+        </form>
+    </div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-right">
+                <h2>Ласкаво просимо</h2>
+                <p>Збережи свої <b>Spohady</b></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>
+        Створено з <b>Любов'ю</b> <i class="fa fa-heart"></i> by
+        <a target="_blank" href="https://florin-pop.com">Algoholics</a>
+    </p>
+</footer>

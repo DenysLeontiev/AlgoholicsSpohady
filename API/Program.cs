@@ -1,33 +1,17 @@
-using API.Data;
-using API.Entities;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using API.ExtensionMethods;
+using API.Interfaces;
+using API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DataContext>(opts =>
-{
-    opts.UseSqlite(connectionString);
-});
-
-builder.Services.AddIdentity<User, IdentityRole>(options =>
-            {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6; // TODO: Change on production (14.05.2023)
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.User.RequireUniqueEmail = true; // we will handle that ourselfs
-
-            }).AddEntityFrameworkStores<DataContext>();
-
-builder.Services.AddCors();
+builder.Services.ConfigureDbContext(builder.Configuration);
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureAuthentification(builder.Configuration);
+builder.Services.ConfigureServices();
 
 var app = builder.Build();
 

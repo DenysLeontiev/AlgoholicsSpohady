@@ -16,6 +16,9 @@ namespace API.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Memory> Memories { get; set; }
+        public DbSet<Photo> Photos { get; set; }
+        public DbSet<UserMemory> UserMemories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -12,6 +12,7 @@ namespace API.Entities
         public string Description { get; set; }
         public string MemoryUrl { get; set; }
         public string MemoryQrCode { get; set; }
+        public string OwnerUserName { get; set; }
         public DateTime DateCreated { get; set; }
         public List<User> Users { get; set; } = new();
         public List<Photo> Photos { get; set; } = new();
