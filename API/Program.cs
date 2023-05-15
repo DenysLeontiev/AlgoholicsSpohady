@@ -16,6 +16,7 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureAuthentification(builder.Configuration);
 builder.Services.ConfigureServices();
 builder.Services.ConfigureCloudinaryAccount(builder.Configuration);
+builder.Services.ConfigureAutoMapper(); // AutoMapper Config
 
 var app = builder.Build();
 

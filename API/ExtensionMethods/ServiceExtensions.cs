@@ -73,5 +73,10 @@ namespace API.ExtensionMethods
         {
             services.Configure<CloudinaryAccount>(configuration.GetSection("CloudinarySettings"));
         }
+
+        public static void ConfigureAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        }
     }
 }

@@ -27,14 +27,18 @@ namespace API.Repositories
 
         public async Task<IEnumerable<Memory>> GetAllMemoriesAsync(bool trackChanges)
         {
-            return await FindAll(trackChanges).ToListAsync();
+            return await FindAll(trackChanges).Include(x => x.Users)
+                                              .Include(p => p.Photos)
+                                              .ToListAsync();
         }
 
 
         public async Task<Memory> GetMemoryByIdAsync(string id, bool trackChanges)
         {
-            return await _context.Memories.Include(x => x.Photos).Include(x => x.Users).FirstOrDefaultAsync(x => x.Id == id);
-            return await FindByCondition(m => m.Id.Equals(id), trackChanges);
+            return await _context.Memories.Include(x => x.Users)
+                                          .Include(x => x.Photos)
+                                          .FirstOrDefaultAsync(x => x.Id == id);
+            // return await FindByCondition(m => m.Id.Equals(id), trackChanges);
         }
     }
 }
