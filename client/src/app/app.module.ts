@@ -13,6 +13,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { MemoryCreatorComponent } from './memory-creator/memory-creator.component';
 import { JwtInterceptor } from './_interceptors/jwt.interceptor';
+import { MemoryListComponent } from './memory-list/memory-list.component';
+import { MemoryCardComponent } from './memory-card/memory-card.component';
+import { MemoryDetailComponent } from './memory-detail/memory-detail.component';
+import { TabsModule } from 'ngx-bootstrap/tabs'
+import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 
 @NgModule({
   declarations: [
@@ -20,7 +25,10 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
     HomeComponent,
     NavComponent,
     RegisterComponent,
-    MemoryCreatorComponent
+    MemoryCreatorComponent,
+    MemoryListComponent,
+    MemoryCardComponent,
+    MemoryDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -35,8 +43,9 @@ import { JwtInterceptor } from './_interceptors/jwt.interceptor';
       countDuplicates: true,
       progressBar: true,
     }),
+    TabsModule.forRoot(),
+    NgxGalleryModule,
     BsDropdownModule.forRoot(),
-
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

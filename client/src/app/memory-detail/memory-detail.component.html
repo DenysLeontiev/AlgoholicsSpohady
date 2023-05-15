@@ -1,0 +1,43 @@
+<div class="row">
+    <div class="col-4" *ngIf="memory">
+        <div class="card">
+            <img [src]="imagePath" alt="{{memory.title}}" class="card-img-top img-thumbnail">
+            <div class="card-body scrollable">
+                <div>
+                    <strong>Заголовок:</strong>
+                    <p>{{memory.title}}</p>
+                </div>
+                <div>
+                    <strong>Створено:</strong>
+                    <p>{{memory.dateCreated | date: 'fullDate'}}</p>
+                </div>
+                <div>
+                    <strong>Опис :</strong>
+                    <p>{{memory.description}}</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="btn-group d-flex">
+                    <button class="btn btn-danger" (click)="redirectToMyMemories()">Мої спогади</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-8">
+        <tabset class="member-tabset" #memberTabs>
+            <tab heading='Фото'>
+                <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
+            </tab>
+            <tab heading='Учасники'>
+
+            </tab>
+            <tab heading="Обговорення">
+
+            </tab>
+            <tab heading='Редагувати'>
+
+            </tab>
+        </tabset>
+    </div>
+</div>
