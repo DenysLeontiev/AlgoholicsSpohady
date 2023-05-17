@@ -30,15 +30,21 @@
                 <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
             </tab>
             <tab heading='Учасники'>
-                <!-- <ul *ngFor="let userInMemory of usersInMemory" class="beautiful-list">
-                    <li>{{userInMemory.userName}}</li>
-                </ul> -->
+                <div class="input-container">
+                    <div class="hint-container">
+                        <div class="hint me-2"><i class="fa fa-question"></i></div>
+                        <div class="hint-text">Додайте користувача за його іменем</div>
+                    </div>
+                    <input [(ngModel)]="addUserToMemory.userName" name="userName" type="text" class="form-control mt-2"
+                        style="max-width: 300px;" placeholder="Ім'я">
+                    <button class="btn btn-success mt-2" (click)="addUserMemory()">Додати</button>
+                </div>
                 <ul class="beautiful-list">
                     <li *ngFor="let userInMemory of usersInMemory">
                         <span>{{userInMemory.userName | titlecase}}</span>
                         <span>{{ userInMemory.email }}</span>
                         <button *ngIf="memory?.ownerUserName != userInMemory.userName"
-                            class="red-button">Видалити</button>
+                            class="red-button" (click)="removeUserMemory(userInMemory.userName)">Видалити</button>
                     </li>
                 </ul>
             </tab>

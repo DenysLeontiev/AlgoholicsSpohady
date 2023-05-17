@@ -86,6 +86,7 @@ namespace API.ExtensionMethods
         {
             services.AddScoped<MemoryWithMemoryIdExists>(); // TODO: Check is that's correct
             services.AddScoped<UserWithUserIdExists>();
+            services.AddScoped<RemoveUserFromMemoryAttribute>();
         }
     }
 }

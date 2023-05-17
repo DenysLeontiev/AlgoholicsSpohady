@@ -141,11 +141,14 @@ namespace API.Controllers
         [HttpPost("add-user-to-memory")]
         public async Task<ActionResult> AddUserToMemory([FromBody] AddUserToMemoryDto addUserToMemoryDto)
         {
+            string currentUsername = User.GetCurrentUserName();
+
             if (string.IsNullOrWhiteSpace(addUserToMemoryDto.MemoryId) ||
                 string.IsNullOrWhiteSpace(addUserToMemoryDto.UserName))
             {
                 return BadRequest("Invalid(empty) MemoryId or UserName field(s)");
             }
+
 
             var memory = await _repositoryManager.Memory.GetMemoryByIdAsync(addUserToMemoryDto.MemoryId, trackChanges: true);
             if (memory == null)
@@ -153,12 +156,18 @@ namespace API.Controllers
                 return NotFound("Memory is not found");
             }
 
-            if (memory.Users.Where(u => u.UserName == addUserToMemoryDto.UserName).FirstOrDefault() != null)
+            if(currentUsername != memory.OwnerUserName)
+            {
+                return BadRequest($"Such user({currentUsername}) has to rights no do this");
+            }
+
+            var user = await _repositoryManager.User.GetUserByUsernameAsync(addUserToMemoryDto.UserName, true);
+
+            if (memory.Users.Contains(user))
             {
                 return BadRequest("Such Memory already has that user");
             }
 
-            var user = await _repositoryManager.User.GetUserByUsernameAsync(addUserToMemoryDto.UserName, true);
             if (user == null)
             {
                 return NotFound("User is not found");
@@ -169,20 +178,19 @@ namespace API.Controllers
 
             await _repositoryManager.SaveAsync();
 
-            return Ok("User is added to the memory");
+            return Ok();
         }
 
-        [ServiceFilter(typeof(MemoryWithMemoryIdExists))]
-        [ServiceFilter(typeof(UserWithUserIdExists))]
-        [HttpPost("{memoryId}/users/{userId}")] // removes particulal user from aprtic. memory by Ids
-        public async Task<ActionResult> RemoveUserFromMemory(string memoryId, string userId)
+        [ServiceFilter(typeof(RemoveUserFromMemoryAttribute))]
+        [HttpPost("remove-user-from-memory")] // removes particulal user from aprtic. memory by Ids
+        public async Task<ActionResult> RemoveUserFromMemory([FromBody] RemoveUserFromMemoryDto removeUserFromMemory)
         {
             var memory = HttpContext.Items["memory"] as Memory;
             var user = HttpContext.Items["user"] as User;
 
             if(memory.OwnerUserName == user.UserName)
             {
-                return BadRequest("You can nott remove owner from memory");
+                return BadRequest("You can not remove owner from memory");
             }
 
             if(!memory.Users.Contains(user))

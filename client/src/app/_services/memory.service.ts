@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Memory } from '../_models/memory';
 import { UserInMemory } from '../_models/userInMemory';
+import { AddUserToMemory } from '../_models/addUserToMemory';
+import { RemoveUserFromMemory } from '../_models/removeUserFromMemory';
 
 @Injectable({
   providedIn: 'root'
@@ -26,5 +28,13 @@ export class MemoryService {
 
   getUsersInMemory(memoryId: string) {
     return this.httpClient.get<UserInMemory[]>(this.baseUrl + 'memories/users-in-memory/' + memoryId);
+  }
+
+  addUserToMemory(addUserToMemory: AddUserToMemory) {
+    return this.httpClient.post(this.baseUrl + 'memories/add-user-to-memory', addUserToMemory);
+  }
+
+  removeUserFromMemory(removeUserFromMemory: RemoveUserFromMemory) {
+    return this.httpClient.post(this.baseUrl + "memories/remove-user-from-memory", removeUserFromMemory);
   }
 }

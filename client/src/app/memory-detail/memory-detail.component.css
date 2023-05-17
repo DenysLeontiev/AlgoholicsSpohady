@@ -1,68 +1,141 @@
 .img-thumbnail {
-    margin: 25px;
-    width: 85%;
-    height: 85%;
+  margin: 25px;
+  width: 85%;
+  height: 85%;
 }
 
 .card-body {
-    padding: 0 25px;
+  padding: 0 25px;
 }
 
 .card-footer {
-    padding: 10px 15px;
-    background-color: #fff;
-    border-top: none;
+  padding: 10px 15px;
+  background-color: #fff;
+  border-top: none;
 }
 
 .scrollable {
-    overflow-y: auto;
-    max-height: 200px;
-    /* Adjust the max-height value according to your needs */
+  overflow-y: auto;
+  max-height: 200px;
+  /* Adjust the max-height value according to your needs */
 }
 
 .ngx-gallery {
-    display: inline-block;
-    margin-bottom: 20px;
+  display: inline-block;
+  margin-bottom: 20px;
 }
 
 .beautiful-list {
-    list-style: none;
-    padding: 0;
-    margin: 20px 0;
-  }
-  
-  .beautiful-list li {
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .beautiful-list li:hover {
-    background-color: #e0e0e0;
-    cursor: pointer;
-  }
-  
-  .beautiful-list li span {
-    flex-grow: 1;
-  }
-  
-  .red-button {
-    background-color: #ff5252;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  
-  .red-button:hover {
-    background-color: #ff0000;
-  }
-  
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.beautiful-list li {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.beautiful-list li:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+
+.beautiful-list li span {
+  flex-grow: 1;
+}
+
+.red-button {
+  background-color: #ff5252;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.red-button:hover {
+  background-color: #ff0000;
+}
+
+
+.hint-container {
+  position: relative;
+  display: inline-block;
+}
+
+.hint {
+  position: relative;
+  padding: 10px;
+  background-color: #e9e9e9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.hint-text {
+  width: 200px;
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px;
+  background-color: #1a1a1a;
+  color: #fff;
+  font-size: 14px;
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.hint-container:hover .hint-text {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+}
+
+.hint-container {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.hint {
+  padding: 5px;
+  background-color: #e9e9e9;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.hint-text {
+  font-size: 12px;
+  background-color: #1a1a1a;
+  color: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  margin-left: 5px;
+}
+
+.form-control {
+  flex: 1;
+}
+
+.btn {
+  margin-left: 5px;
+}

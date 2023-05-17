@@ -5,6 +5,9 @@ import { MemoryService } from '../_services/memory.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
 import { UserInMemory } from '../_models/userInMemory';
+import { AddUserToMemory } from '../_models/addUserToMemory';
+import { ToastrService } from 'ngx-toastr';
+import { RemoveUserFromMemory } from '../_models/removeUserFromMemory';
 
 @Component({
   selector: 'app-memory-detail',
@@ -20,10 +23,21 @@ export class MemoryDetailComponent implements OnInit {
   usersInMemory: UserInMemory[] = [];
   memoryId: string | null = "";
 
-  constructor(private memoryService: MemoryService, 
-              private activatedRoute: ActivatedRoute, 
-              private sanitizer: DomSanitizer,
-              private router: Router) { }
+  addUserToMemory: AddUserToMemory = {
+    memoryId: '',
+    userName: '',
+  }
+
+  removeUserFromMemory: RemoveUserFromMemory = {
+    memoryId: '',
+    userName: '',
+  }
+
+  constructor(private memoryService: MemoryService,
+    private activatedRoute: ActivatedRoute,
+    private sanitizer: DomSanitizer,
+    private router: Router,
+    private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.getMemoryFromRoute();
@@ -64,6 +78,8 @@ export class MemoryDetailComponent implements OnInit {
       this.memoryService.getMemory(this.memoryId).subscribe((response) => {
         this.imagePath = this.sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + response.memoryQrCode);
         this.memory = response;
+        this.addUserToMemory.memoryId = this.memoryId!;
+        this.removeUserFromMemory.memoryId = this.memoryId!;
         this.galleryImages = this.getImages();
       }, error => {
         console.log(error);
@@ -72,7 +88,7 @@ export class MemoryDetailComponent implements OnInit {
   }
 
   loadUsersInMemory() {
-    if(this.memoryId) {
+    if (this.memoryId) {
       this.memoryService.getUsersInMemory(this.memoryId).subscribe((response) => {
         this.usersInMemory = response;
         console.log(response);
@@ -90,5 +106,27 @@ export class MemoryDetailComponent implements OnInit {
 
   redirectToMyMemories() {
     this.router.navigateByUrl('/memories');
+  }
+
+  addUserMemory() {
+    return this.memoryService.addUserToMemory(this.addUserToMemory).subscribe((response) => {
+      this.toastr.info(`Користувача ${this.addUserToMemory.userName} додано до цього спогаду як учасника`);
+      window.location.reload();
+    }, error => {
+      console.log(error);
+      this.toastr.error("Сталася помилка.Користувача не додано");
+    });
+  }
+
+  removeUserMemory(userName: string) {
+    this.removeUserFromMemory.userName = userName;
+
+    this.memoryService.removeUserFromMemory(this.removeUserFromMemory).subscribe((response) => {
+      this.toastr.info(`Користувача під іменем ${userName} видалено`);
+      window.location.reload();
+    }, error => {
+      console.log(error);
+      this.toastr.error(error);
+    })
   }
 }
