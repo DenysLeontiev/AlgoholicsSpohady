@@ -30,7 +30,17 @@
                 <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
             </tab>
             <tab heading='Учасники'>
-
+                <!-- <ul *ngFor="let userInMemory of usersInMemory" class="beautiful-list">
+                    <li>{{userInMemory.userName}}</li>
+                </ul> -->
+                <ul class="beautiful-list">
+                    <li *ngFor="let userInMemory of usersInMemory">
+                        <span>{{userInMemory.userName | titlecase}}</span>
+                        <span>{{ userInMemory.email }}</span>
+                        <button *ngIf="memory?.ownerUserName != userInMemory.userName"
+                            class="red-button">Видалити</button>
+                    </li>
+                </ul>
             </tab>
             <tab heading="Обговорення">
 

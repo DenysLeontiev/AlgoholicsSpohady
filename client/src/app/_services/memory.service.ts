@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Memory } from '../_models/memory';
+import { UserInMemory } from '../_models/userInMemory';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +22,9 @@ export class MemoryService {
 
   getAllMemories() {
     return this.httpClient.get<Memory[]>(this.baseUrl + 'memories');
+  }
+
+  getUsersInMemory(memoryId: string) {
+    return this.httpClient.get<UserInMemory[]>(this.baseUrl + 'memories/users-in-memory/' + memoryId);
   }
 }

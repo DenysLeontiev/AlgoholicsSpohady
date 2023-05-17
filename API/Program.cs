@@ -1,6 +1,4 @@
 using API.ExtensionMethods;
-using API.Interfaces;
-using API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +15,8 @@ builder.Services.ConfigureAuthentification(builder.Configuration);
 builder.Services.ConfigureServices();
 builder.Services.ConfigureCloudinaryAccount(builder.Configuration);
 builder.Services.ConfigureAutoMapper(); // AutoMapper Config
+builder.Services.ConfigureDataShapper();
+builder.Services.ConfigureActionFilters();
 
 var app = builder.Build();
 
@@ -28,7 +28,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(builder =>
 {
-    builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200");
+    builder.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:4200");
 });
 
 app.UseHttpsRedirection();

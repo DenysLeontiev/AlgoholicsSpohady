@@ -1,4 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GoogleLoginProvider, SocialAuthService, SocialUser } from 'angularx-social-login';
 
 @Component({
   selector: 'app-home',

@@ -4,6 +4,7 @@ using API.DataTransferObjects;
 using API.Entities;
 using API.Interfaces;
 using API.Services;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,14 +17,21 @@ namespace API.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenHandler _tokenHandler;
+        private readonly IConfiguration _config;
         private readonly DataContext _context;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ITokenHandler tokenHandler, DataContext context)
+        public AccountController(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            ITokenHandler tokenHandler,
+            DataContext context,
+            IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenHandler = tokenHandler;
             _context = context;
+            _config = config;
         }
 
         [HttpPost("register")]
@@ -75,6 +83,35 @@ namespace API.Controllers
                 Token = _tokenHandler.CreateToken(userFromDb)
             };
             return Ok(userJwt);
+        }
+
+        [HttpPost("google-login")]
+        public async Task<ActionResult> LoginWithGoogle([FromBody] string credential)
+        {
+            string clientId = _config.GetSection("ClientId").Value;
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { clientId }
+            };
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(credential, settings);
+
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+
+            if (user != null)
+            {
+                var userJwt = new UserJwtDto
+                {
+                    Username = user.UserName,
+                    Email = user.Email,
+                    Token = _tokenHandler.CreateToken(user),
+                };
+                return Ok(userJwt);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }

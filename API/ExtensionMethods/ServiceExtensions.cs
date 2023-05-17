@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using API.ActionFilters;
 using API.Data;
 using API.Entities;
 using API.Helpers;
@@ -13,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Repository;
 
 namespace API.ExtensionMethods
 {
@@ -77,6 +75,17 @@ namespace API.ExtensionMethods
         public static void ConfigureAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        }
+
+        public static void ConfigureDataShapper(this IServiceCollection services)
+        {
+            services.AddScoped<IDataShaper<User>, DataShaper<User>>();
+        }
+
+        public static void ConfigureActionFilters(this IServiceCollection services)
+        {
+            services.AddScoped<MemoryWithMemoryIdExists>(); // TODO: Check is that's correct
+            services.AddScoped<UserWithUserIdExists>();
         }
     }
 }

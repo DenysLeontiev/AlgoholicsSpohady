@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { NavComponent } from './nav/nav.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './register/register.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -18,6 +18,8 @@ import { MemoryCardComponent } from './memory-card/memory-card.component';
 import { MemoryDetailComponent } from './memory-detail/memory-detail.component';
 import { TabsModule } from 'ngx-bootstrap/tabs'
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
+import { GoogleLoginProvider, SocialAuthService, SocialAuthServiceConfig } from 'angularx-social-login';
+import { GoogleLoginComponent } from './google-login/google-login.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,8 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
     MemoryCreatorComponent,
     MemoryListComponent,
     MemoryCardComponent,
-    MemoryDetailComponent
+    MemoryDetailComponent,
+    GoogleLoginComponent
   ],
   imports: [
     BrowserModule,
@@ -45,9 +48,23 @@ import { NgxGalleryModule } from '@kolkov/ngx-gallery';
     }),
     TabsModule.forRoot(),
     NgxGalleryModule,
+    ReactiveFormsModule,
     BsDropdownModule.forRoot(),
   ],
   providers: [
+    SocialAuthService,
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider('933185681485-lups4j3a03jn67vmgmpd0i1kahmssgfv.apps.googleusercontent.com'),
+          },
+        ],
+      } as SocialAuthServiceConfig,
+    },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]

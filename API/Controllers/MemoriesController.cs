@@ -1,12 +1,18 @@
+using System.Buffers;
 using System.Collections;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
+using API.ActionFilters;
 using API.DataTransferObjects;
 using API.Entities;
 using API.ExtensionMethods;
 using API.Interfaces;
+using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -16,17 +22,20 @@ namespace API.Controllers
         private readonly IRepositoryManager _repositoryManager;
         private readonly IQrCodeGenerator _qrCodeGenerator;
         private readonly IPhotoService _photoService;
+        private readonly IDataShaper<User> _dataShaper;
         private readonly IMapper _mapper;
 
         public MemoriesController(IRepositoryManager repositoryManager,
                                   IQrCodeGenerator qrCodeGenerator,
                                   IPhotoService photoService,
+                                  IDataShaper<User> dataShaper,
                                   IMapper mapper)
         {
             _repositoryManager = repositoryManager;
             _qrCodeGenerator = qrCodeGenerator;
             _photoService = photoService;
             _mapper = mapper;
+            _dataShaper = dataShaper;
         }
 
         [HttpGet]
@@ -47,7 +56,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{memoryId}")]
-        public async Task<ActionResult> GetMemory(string memoryId) // TODO: Add DTOs for Photo,User,Memory
+        public async Task<ActionResult> GetMemory(string memoryId) 
         {
             var memory = await _repositoryManager.Memory.GetMemoryByIdAsync(memoryId, trackChanges: false);
 
@@ -59,6 +68,25 @@ namespace API.Controllers
             var memoryToReturn = _mapper.Map<MemoryDto>(memory);
 
             return Ok(memoryToReturn);
+        }
+
+        [HttpGet("users-in-memory/{memoryId}")]
+        public async Task<ActionResult> GetUsersInMemory(string memoryId)
+        {
+            string fieldsString = "Id,UserName,Email";
+            var memory = await _repositoryManager.Memory.GetMemoryByIdAsync(memoryId, trackChanges: false);
+
+            if(memory == null)
+            {
+                return NotFound("Memory is not found");
+            }
+
+            var usersInMemory = memory.Users;
+
+            var shappedData = _dataShaper.ShapeData(usersInMemory, fieldsString);
+            var parsedData = JsonConvert.DeserializeObject<IEnumerable<UserInMemoryDto>>(JsonConvert.SerializeObject(shappedData));
+
+            return Ok(parsedData);
         }
 
 
@@ -125,13 +153,13 @@ namespace API.Controllers
                 return NotFound("Memory is not found");
             }
 
-            if(memory.Users.Where(u => u.UserName == addUserToMemoryDto.UserName).FirstOrDefault() != null)
+            if (memory.Users.Where(u => u.UserName == addUserToMemoryDto.UserName).FirstOrDefault() != null)
             {
                 return BadRequest("Such Memory already has that user");
             }
 
             var user = await _repositoryManager.User.GetUserByUsernameAsync(addUserToMemoryDto.UserName, true);
-            if(user == null)
+            if (user == null)
             {
                 return NotFound("User is not found");
             }
@@ -143,5 +171,32 @@ namespace API.Controllers
 
             return Ok("User is added to the memory");
         }
+
+        [ServiceFilter(typeof(MemoryWithMemoryIdExists))]
+        [ServiceFilter(typeof(UserWithUserIdExists))]
+        [HttpPost("{memoryId}/users/{userId}")] // removes particulal user from aprtic. memory by Ids
+        public async Task<ActionResult> RemoveUserFromMemory(string memoryId, string userId)
+        {
+            var memory = HttpContext.Items["memory"] as Memory;
+            var user = HttpContext.Items["user"] as User;
+
+            if(memory.OwnerUserName == user.UserName)
+            {
+                return BadRequest("You can nott remove owner from memory");
+            }
+
+            if(!memory.Users.Contains(user))
+            {
+                return BadRequest("User does not exist on this memory");
+            }
+
+            memory.Users.Remove(user);
+            user.Memories.Remove(memory);
+
+            await _repositoryManager.SaveAsync();
+
+            return Ok();
+        }
+        
     }
 }

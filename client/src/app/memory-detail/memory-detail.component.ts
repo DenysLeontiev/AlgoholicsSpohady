@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MemoryService } from '../_services/memory.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
+import { UserInMemory } from '../_models/userInMemory';
 
 @Component({
   selector: 'app-memory-detail',
@@ -16,6 +17,8 @@ export class MemoryDetailComponent implements OnInit {
   imagePath: SafeResourceUrl = "";
   galleryOptions: NgxGalleryOptions[] = [];
   galleryImages: NgxGalleryImage[] = [];
+  usersInMemory: UserInMemory[] = [];
+  memoryId: string | null = "";
 
   constructor(private memoryService: MemoryService, 
               private activatedRoute: ActivatedRoute, 
@@ -24,6 +27,7 @@ export class MemoryDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMemoryFromRoute();
+    this.loadUsersInMemory();
 
 
     this.galleryOptions = [
@@ -32,7 +36,7 @@ export class MemoryDetailComponent implements OnInit {
         height: '600px',
         imagePercent: 100,
         thumbnailsColumns: 4,
-        imageAnimation: NgxGalleryAnimation.Rotate,
+        imageAnimation: NgxGalleryAnimation.Zoom,
         preview: false
       },
     ]
@@ -55,12 +59,23 @@ export class MemoryDetailComponent implements OnInit {
   }
 
   getMemoryFromRoute() {
-    let id = this.activatedRoute.snapshot.paramMap.get('id');
-    if (id) {
-      this.memoryService.getMemory(id).subscribe((response) => {
+    this.memoryId = this.activatedRoute.snapshot.paramMap.get('id');
+    if (this.memoryId) {
+      this.memoryService.getMemory(this.memoryId).subscribe((response) => {
         this.imagePath = this.sanitizer.bypassSecurityTrustResourceUrl('data:image/jpg;base64,' + response.memoryQrCode);
         this.memory = response;
         this.galleryImages = this.getImages();
+      }, error => {
+        console.log(error);
+      })
+    }
+  }
+
+  loadUsersInMemory() {
+    if(this.memoryId) {
+      this.memoryService.getUsersInMemory(this.memoryId).subscribe((response) => {
+        this.usersInMemory = response;
+        console.log(response);
       }, error => {
         console.log(error);
       })
