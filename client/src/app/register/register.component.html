@@ -1,17 +1,18 @@
 <div class="container" id="container">
-    <div class="form-container sign-in-container">
-        <form action="#">
-            <h4>Створення аккаунта</h4>
+    <div class="form-container sign-in-container mt-5">
+        <form [formGroup]="registerForm">
             <div class="social-container">
                 <a href="#" class="social"><i class="fa fa-github"></i></a>
                 <a href="#" class="social"><i class="fa fa-facebook"></i></a>
                 <a href="#" class="social"><i class="fa fa-instagram"></i></a>
             </div>
-            <input [(ngModel)]="registerModel.userName" name="userName" type="text" placeholder="Ім'я" />
-            <input [(ngModel)]="registerModel.email" name="email" type="email" placeholder="Email" />
-            <input [(ngModel)]="registerModel.password" name="password" type="password" placeholder="Password" />
-            <button (click)="register()">Зареєструватися</button>
-            <button class="mt-3" (click)="cancelRegister()">Назад</button>
+            <app-text-input [formControl]="$any(registerForm.controls['userName'])" [fieldName]="'Ім\`я'" [label]="'Ім\'я'"></app-text-input>
+            <app-text-input [formControl]="$any(registerForm.controls['email'])" [fieldName]="'Email'" [label]="'Email'" [type]="'email'"></app-text-input>
+            <app-text-input [formControl]="$any(registerForm.controls['password'])" [fieldName]="'Паролю'" [label]="'Пароль'" [type]="'password'"></app-text-input>
+            <app-text-input [formControl]="$any(registerForm.controls['confirmPassword'])" [fieldName]="'Підтвердження паролю'" [label]="'Підтвердження паролю'" [type]="'password'"></app-text-input>
+
+            <button (click)="register()" [disabled]="!registerForm.valid">Зареєструватися</button>
+            <button class="mt-1 mb-5" (click)="cancelRegister()">Назад</button>
         </form>
     </div>
     <div class="overlay-container">
@@ -23,6 +24,9 @@
         </div>
     </div>
 </div>
+
+<h1>Form Value: {{registerForm.value}}</h1>
+<h1>Form Status: {{registerForm.status}}</h1>
 
 <footer>
     <p>

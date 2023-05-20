@@ -20,6 +20,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs'
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import { GoogleLoginProvider, SocialAuthService, SocialAuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginComponent } from './google-login/google-login.component';
+import { EditMemoryComponent } from './edit-memory/edit-memory.component';
+import { TextInputComponent } from './_forms/text-input/text-input.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { GoogleLoginComponent } from './google-login/google-login.component';
     MemoryListComponent,
     MemoryCardComponent,
     MemoryDetailComponent,
-    GoogleLoginComponent
+    GoogleLoginComponent,
+    EditMemoryComponent,
+    TextInputComponent
   ],
   imports: [
     BrowserModule,

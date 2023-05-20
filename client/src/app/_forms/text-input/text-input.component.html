@@ -1,0 +1,20 @@
+<input [class.is-invalid]="control.touched && control.invalid"
+    [formControl]="control"
+    name="password" 
+    type="{{type}}" 
+    placeholder="{{label}}" />
+<div class="invalid-feedback" *ngIf="control.errors?.['required']">
+    Введіть {{ fieldName }}
+</div>
+<div class="invalid-feedback" *ngIf="control.errors?.['minlength']">
+    Мінімальна довжина {{ fieldName }} -  символів
+</div>
+<div class="invalid-feedback" *ngIf="control.errors?.['maxlength']">
+    Максимальна довжина - 6 символів
+</div>
+<div class="invalid-feedback" *ngIf="control.errors?.['maxlength']">
+    Максимальна довжина - 15 символів
+</div>
+<div class="invalid-feedback" *ngIf="control.errors?.['notMatching']">
+    Паролі не співпадають
+</div>

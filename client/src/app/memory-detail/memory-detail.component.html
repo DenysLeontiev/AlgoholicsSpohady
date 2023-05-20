@@ -43,8 +43,8 @@
                     <li *ngFor="let userInMemory of usersInMemory">
                         <span>{{userInMemory.userName | titlecase}}</span>
                         <span>{{ userInMemory.email }}</span>
-                        <button *ngIf="memory?.ownerUserName != userInMemory.userName"
-                            class="red-button" (click)="removeUserMemory(userInMemory.userName)">Видалити</button>
+                        <button *ngIf="memory?.ownerUserName != userInMemory.userName" class="red-button"
+                            (click)="removeUserMemory(userInMemory.userName)">Видалити</button>
                     </li>
                 </ul>
             </tab>
@@ -52,7 +52,7 @@
 
             </tab>
             <tab heading='Редагувати'>
-
+                <app-edit-memory [memory]="memory"></app-edit-memory>
             </tab>
         </tabset>
     </div>

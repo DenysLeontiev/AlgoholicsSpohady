@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace API.DataTransferObjects
 {
-    public class AddUserToMemoryDto
+    public class MemoryForUpdateDto
     {
         [Required]
-        public string MemoryId { get; set; }
+        public string Title { get; set; }
         [Required]
-        public string UserName { get; set; }
+        public string Description { get; set; }
     }
 }

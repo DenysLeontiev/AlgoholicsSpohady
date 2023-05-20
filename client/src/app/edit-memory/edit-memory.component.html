@@ -1,0 +1,22 @@
+<!-- <div class="col-8">
+    <div class="alert alert-info" *ngIf="editForm?.dirty">
+        <strong>Information: </strong> You have made changes.  Any unsaved changes will be lost
+    </div>
+</div> -->
+
+<form #editMemoryFrom="ngForm" class="card-form">
+    <div class="input">
+        <input  type="text" class="input-field" [(ngModel)]="model.title" name="title" required value="{{memory?.title}}" />
+        <label class="input-label">Заголовок</label>
+    </div>
+
+    <div class="input">
+        <textarea [(ngModel)]="model.description" name="description" type="text" class="input-field" required
+            value="{{memory?.description}}"></textarea>
+        <label class="input-label">Опис</label>
+    </div>
+
+    <div class="action">
+        <button class="action-button" (click)="updateMemory()">Редагувати</button>
+    </div>
+</form>

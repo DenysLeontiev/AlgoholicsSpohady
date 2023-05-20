@@ -56,7 +56,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{memoryId}")]
-        public async Task<ActionResult> GetMemory(string memoryId) 
+        public async Task<ActionResult> GetMemory(string memoryId)
         {
             var memory = await _repositoryManager.Memory.GetMemoryByIdAsync(memoryId, trackChanges: false);
 
@@ -70,13 +70,15 @@ namespace API.Controllers
             return Ok(memoryToReturn);
         }
 
+        [ServiceFilter(typeof(MemoryWithMemoryIdExists))]
         [HttpGet("users-in-memory/{memoryId}")]
-        public async Task<ActionResult> GetUsersInMemory(string memoryId)
+        public ActionResult GetUsersInMemory(string memoryId)
         {
             string fieldsString = "Id,UserName,Email";
-            var memory = await _repositoryManager.Memory.GetMemoryByIdAsync(memoryId, trackChanges: false);
+            // var memory = await _repositoryManager.Memory.GetMemoryByIdAsync(memoryId, trackChanges: false);
+            var memory = HttpContext.Items["memory"] as Memory;
 
-            if(memory == null)
+            if (memory == null)
             {
                 return NotFound("Memory is not found");
             }
@@ -138,6 +140,26 @@ namespace API.Controllers
             return Ok(memoryToCreate);
         }
 
+        [ServiceFilter(typeof(MemoryWithMemoryIdExists))]
+        [HttpPost("update-memory/{memoryId}")]
+        public async Task<ActionResult> UpdateMemory(string memoryId, [FromBody] MemoryForUpdateDto memoryForUpdateDto)
+        {
+            var memory = HttpContext.Items["memory"] as Memory;
+
+            if (string.IsNullOrWhiteSpace(memoryForUpdateDto.Title) ||
+               string.IsNullOrWhiteSpace(memoryForUpdateDto.Description))
+            {
+                return BadRequest("Invalid data(empty fields)");
+            }
+
+            memory.Title = memoryForUpdateDto.Title;
+            memory.Description = memoryForUpdateDto.Description;
+
+            await _repositoryManager.SaveAsync();
+
+            return Ok();
+        }
+
         [HttpPost("add-user-to-memory")]
         public async Task<ActionResult> AddUserToMemory([FromBody] AddUserToMemoryDto addUserToMemoryDto)
         {
@@ -156,7 +178,7 @@ namespace API.Controllers
                 return NotFound("Memory is not found");
             }
 
-            if(currentUsername != memory.OwnerUserName)
+            if (currentUsername != memory.OwnerUserName)
             {
                 return BadRequest($"Such user({currentUsername}) has to rights no do this");
             }
@@ -188,12 +210,12 @@ namespace API.Controllers
             var memory = HttpContext.Items["memory"] as Memory;
             var user = HttpContext.Items["user"] as User;
 
-            if(memory.OwnerUserName == user.UserName)
+            if (memory.OwnerUserName == user.UserName)
             {
                 return BadRequest("You can not remove owner from memory");
             }
 
-            if(!memory.Users.Contains(user))
+            if (!memory.Users.Contains(user))
             {
                 return BadRequest("User does not exist on this memory");
             }
@@ -205,6 +227,6 @@ namespace API.Controllers
 
             return Ok();
         }
-        
+
     }
 }

@@ -5,6 +5,7 @@ import { Memory } from '../_models/memory';
 import { UserInMemory } from '../_models/userInMemory';
 import { AddUserToMemory } from '../_models/addUserToMemory';
 import { RemoveUserFromMemory } from '../_models/removeUserFromMemory';
+import { MemoryForUpdate } from '../_models/memoryForUpdate';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +37,9 @@ export class MemoryService {
 
   removeUserFromMemory(removeUserFromMemory: RemoveUserFromMemory) {
     return this.httpClient.post(this.baseUrl + "memories/remove-user-from-memory", removeUserFromMemory);
+  }
+
+  updateMemory(memoryId: string, model: MemoryForUpdate) {
+    return this.httpClient.post(this.baseUrl + "memories/update-memory/" + memoryId, model);
   }
 }
