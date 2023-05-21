@@ -22,7 +22,8 @@ namespace API.ExtensionMethods
             }
         }
 
-
-
+        public string SearchTerm { get; set; } = "";
+        public string OrderByField { get; set; } = "DateCreated";
+        public string OrderByType { get; set; } = "ASC"; // "DESC"
     }
 }

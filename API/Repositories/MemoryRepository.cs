@@ -28,7 +28,7 @@ namespace API.Repositories
             Delete(memory);
         }
 
-        public PagedList<Memory> GetAllMemoriesAsync([FromQuery] UserParams userParam,bool trackChanges)
+        public PagedList<Memory> GetAllMemoriesAsync([FromQuery] UserParams userParam, bool trackChanges)
         {
             var query = _context.Memories.Include(u => u.Users)
                                          .Include(p => p.Photos)
@@ -38,7 +38,7 @@ namespace API.Repositories
             return PagedList<Memory>.CreateAsync(query,
                                                        userParam.PageNumber,
                                                        userParam.PageSize);
-                                                       
+
             // return await FindAll(trackChanges).Include(x => x.Users)
             //                                   .Include(p => p.Photos)
             //                                   .ToListAsync();
@@ -51,7 +51,21 @@ namespace API.Repositories
                                            .FirstOrDefaultAsync(x => x.UserName == userName);
 
             var query = user.Memories;
-            return PagedList<Memory>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);   
+            if (!string.IsNullOrWhiteSpace(userParams.SearchTerm))
+            {
+                query = query.Where(x => x.Title.Contains(userParams.SearchTerm)).ToList();
+            }
+
+            if (userParams.OrderByType == "ASC")
+            {
+                query = query.OrderBy(x => x.DateCreated).ToList();
+            }
+            else
+            {
+                query = query.OrderByDescending(x => x.DateCreated).ToList();
+            }
+
+            return PagedList<Memory>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
         }
 
         public async Task<Memory> GetMemoryByIdAsync(string id, bool trackChanges)

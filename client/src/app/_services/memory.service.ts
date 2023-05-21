@@ -8,6 +8,7 @@ import { RemoveUserFromMemory } from '../_models/removeUserFromMemory';
 import { MemoryForUpdate } from '../_models/memoryForUpdate';
 import { PaginatedResult } from '../_models/pagination';
 import { map } from 'rxjs/operators';
+import { UserParams } from '../_models/userParams';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,6 @@ import { map } from 'rxjs/operators';
 export class MemoryService {
 
   baseUrl: string = environment.baseUrl;
-  paginatedResult: PaginatedResult<Memory[]> = new PaginatedResult<Memory[]>;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -27,28 +27,46 @@ export class MemoryService {
     return this.httpClient.get<Memory>(this.baseUrl + "memories/" + id);
   }
 
-  getAllMemories(pageNumber?: number, itemsPerPage?: number) {
-    let params = new HttpParams();
-    if (pageNumber && itemsPerPage) {
+  getAllMemories(userParams: UserParams) {
+    let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize, userParams.searchTerm, userParams.orderByType);
 
-      params = params.append('pageNumber', pageNumber);
-      params = params.append('pageSize', itemsPerPage);
-    }
+    return this.getPaginatedResult<Memory[]>(this.baseUrl + 'memories', params);
+  }
 
+  private getPaginatedResult<T>(url: string, params: HttpParams) {
+    const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>;
 
-
-    return this.httpClient.get<Memory[]>(this.baseUrl + 'memories', {observe: 'response', params}).pipe(
+    return this.httpClient.get<T>(url, { observe: 'response', params }).pipe(
       map((response) => {
-        if(response.body) {
-          this.paginatedResult.result = response.body;
+        if (response.body) {
+          paginatedResult.result = response.body;
         }
         const pagination = response.headers.get('Pagination');
-        if(pagination) {
-          this.paginatedResult.pagination = JSON.parse(pagination);
+        if (pagination) {
+          paginatedResult.pagination = JSON.parse(pagination);
         }
-        return this.paginatedResult;
+        return paginatedResult;
       })
     );
+  }
+
+  getPaginationHeaders(pageNumber: number, pageSize: number, searchTerm: string, orderByType: string) {
+    let params = new HttpParams();
+    if (pageNumber && pageSize) {
+
+      params = params.append('pageNumber', pageNumber);
+      params = params.append('pageSize', pageSize);
+    }
+
+    if(searchTerm) {
+      params = params.append("searchTerm", searchTerm);
+    }
+
+    if(orderByType) {
+      params = params.append("orderByType", orderByType);
+    }
+
+    return params;
   }
 
   getUsersInMemory(memoryId: string) {
