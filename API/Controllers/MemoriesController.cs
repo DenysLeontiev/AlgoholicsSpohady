@@ -7,6 +7,7 @@ using API.ActionFilters;
 using API.DataTransferObjects;
 using API.Entities;
 using API.ExtensionMethods;
+using API.Helpers;
 using API.Interfaces;
 using API.Services;
 using AutoMapper;
@@ -39,18 +40,20 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemoryDto>>> GetAllMyMemories()
+        public async Task<ActionResult<PagedList<MemoryDto>>> GetAllMyMemories([FromQuery] UserParams userParams)
         {
             var currentUsername = User.GetCurrentUserName();
 
-            var user = await _repositoryManager.User.GetUserByUsernameAsync(currentUsername, trackChanges: false);
+            var pagedMemories = await _repositoryManager.Memory.GetAllMemoriesForUserAsync(userParams, currentUsername);
 
-            if (user == null)
-            {
-                return NotFound("User is not found");
-            }
+            Response.AddPaginationHeaders(new PaginationHeader(
+                pagedMemories.CurrentPage,
+                pagedMemories.PageSize,
+                pagedMemories.TotalCount,
+                pagedMemories.TotalPages));
 
-            var memoriesToReturn = _mapper.Map<IEnumerable<MemoryDto>>(user.Memories);
+
+            var memoriesToReturn = _mapper.Map<IEnumerable<MemoryDto>>(pagedMemories);
 
             return Ok(memoriesToReturn);
         }

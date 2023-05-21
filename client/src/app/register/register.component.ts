@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AccountService } from '../_services/account.service';
-import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +14,7 @@ export class RegisterComponent implements OnInit {
 
   registerModel: any = {}
 
-  constructor(private accountService: AccountService) { }
+  constructor(private accountService: AccountService, private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -41,8 +41,8 @@ export class RegisterComponent implements OnInit {
 
   register() {
     console.log(this.registerForm.value);
-    return;
-    this.accountService.register(this.registerModel).subscribe((response) => {
+    // return;
+    this.accountService.register(this.registerForm.value).subscribe((response) => {
       console.log(response);
       this.cancelRegister();
     }, error => {

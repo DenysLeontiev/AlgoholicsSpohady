@@ -22,6 +22,7 @@ import { GoogleLoginProvider, SocialAuthService, SocialAuthServiceConfig } from 
 import { GoogleLoginComponent } from './google-login/google-login.component';
 import { EditMemoryComponent } from './edit-memory/edit-memory.component';
 import { TextInputComponent } from './_forms/text-input/text-input.component';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { TextInputComponent } from './_forms/text-input/text-input.component';
     NgxGalleryModule,
     ReactiveFormsModule,
     BsDropdownModule.forRoot(),
+    PaginationModule.forRoot(),
   ],
   providers: [
     SocialAuthService,
