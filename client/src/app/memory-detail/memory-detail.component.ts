@@ -8,6 +8,8 @@ import { UserInMemory } from '../_models/userInMemory';
 import { AddUserToMemory } from '../_models/addUserToMemory';
 import { ToastrService } from 'ngx-toastr';
 import { RemoveUserFromMemory } from '../_models/removeUserFromMemory';
+import { AccountService } from '../_services/account.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-memory-detail',
@@ -23,6 +25,8 @@ export class MemoryDetailComponent implements OnInit {
   usersInMemory: UserInMemory[] = [];
   memoryId: string | null = "";
 
+  currentUserId: string = "";
+
   addUserToMemory: AddUserToMemory = {
     memoryId: '',
     userName: '',
@@ -37,9 +41,12 @@ export class MemoryDetailComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    private accountService: AccountService) { }
 
   ngOnInit(): void {
+    this.getCurrentUserId();
+    console.log(this.currentUserId);
     this.getMemoryFromRoute();
     this.loadUsersInMemory();
 
@@ -54,6 +61,13 @@ export class MemoryDetailComponent implements OnInit {
         preview: false
       },
     ]
+  }
+
+  getCurrentUserId() {
+    this.accountService.currentUser$.subscribe((response) => {
+      this.currentUserId = response?.id!;
+    })
+
   }
 
   getImages() {

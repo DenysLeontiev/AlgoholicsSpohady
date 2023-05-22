@@ -43,8 +43,14 @@
                     <li *ngFor="let userInMemory of usersInMemory">
                         <span>{{userInMemory.userName | titlecase}}</span>
                         <span>{{ userInMemory.email }}</span>
-                        <button *ngIf="memory?.ownerUserName != userInMemory.userName" class="red-button"
-                            (click)="removeUserMemory(userInMemory.userName)">Видалити</button>
+                        <ng-container *ngIf="memory?.ownerId == currentUserId">
+                            <div *ngIf="memory?.ownerId != userInMemory.id">
+                                <button class="red-button"
+                                    (click)="removeUserMemory(userInMemory.userName)">Видалити</button>
+                                <button class="green-button ms-1"
+                                    (click)="removeUserMemory(userInMemory.userName)">Зробити головним</button>
+                            </div>
+                        </ng-container>
                     </li>
                 </ul>
             </tab>

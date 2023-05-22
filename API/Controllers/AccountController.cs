@@ -80,6 +80,7 @@ namespace API.Controllers
             {
                 Username = userFromDb.UserName,
                 Email = userFromDb.Email,
+                Id = userFromDb.Id,
                 Token = _tokenHandler.CreateToken(userFromDb)
             };
             return Ok(userJwt);
@@ -104,6 +105,7 @@ namespace API.Controllers
                 {
                     Username = user.UserName,
                     Email = user.Email,
+                    Id = user.Id,
                     Token = _tokenHandler.CreateToken(user),
                 };
                 return Ok(userJwt);

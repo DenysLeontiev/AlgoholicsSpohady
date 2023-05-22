@@ -15,7 +15,7 @@ export class AccountService {
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(private http: HttpClient,
-              private router: Router) { }
+    private router: Router) { }
 
   register(model: any) {
     return this.http.post<UserJwt>(this.baseUrl + 'account/register', model).pipe(

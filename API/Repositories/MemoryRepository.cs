@@ -44,11 +44,11 @@ namespace API.Repositories
             //                                   .ToListAsync();
         }
 
-        public async Task<PagedList<Memory>> GetAllMemoriesForUserAsync(UserParams userParams, string userName)
+        public async Task<PagedList<Memory>> GetAllMemoriesForUserAsync(UserParams userParams, string id)
         {
             var user = await _context.Users.Include(m => m.Memories)
                                            .ThenInclude(p => p.Photos)
-                                           .FirstOrDefaultAsync(x => x.UserName == userName);
+                                           .FirstOrDefaultAsync(x => x.Id.Equals(id));
 
             var query = user.Memories;
             if (!string.IsNullOrWhiteSpace(userParams.SearchTerm))

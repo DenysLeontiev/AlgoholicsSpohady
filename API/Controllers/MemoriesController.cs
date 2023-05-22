@@ -42,9 +42,9 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedList<MemoryDto>>> GetAllMyMemories([FromQuery] UserParams userParams)
         {
-            var currentUsername = User.GetCurrentUserName();
+            var currentId = User.GetUserId();
 
-            var pagedMemories = await _repositoryManager.Memory.GetAllMemoriesForUserAsync(userParams, currentUsername);
+            var pagedMemories = await _repositoryManager.Memory.GetAllMemoriesForUserAsync(userParams, currentId);
 
             Response.AddPaginationHeaders(new PaginationHeader(
                 pagedMemories.CurrentPage,
@@ -99,9 +99,9 @@ namespace API.Controllers
         public async Task<ActionResult> CreateMemory([FromForm] MemoryForCreationDto memoryForCreationDto)
         {
             // var .currentUsernameTest = User.FindFirst("name")?.Value;
+            var currentId = User.GetUserId();
             var currentUsername = User.GetCurrentUserName();
-
-            var user = await _repositoryManager.User.GetUserByUsernameAsync(currentUsername, true);
+            var user = await _repositoryManager.User.GetUserByIdAsync(currentId, true);
 
             if (user == null)
             {
@@ -127,7 +127,7 @@ namespace API.Controllers
             {
                 Title = memoryForCreationDto.Title,
                 Description = memoryForCreationDto.Description,
-                OwnerUserName = currentUsername,
+                OwnerId = user.Id,
                 Photos = photosToAdd,
                 DateCreated = DateTime.Now,
             };
@@ -167,6 +167,7 @@ namespace API.Controllers
         public async Task<ActionResult> AddUserToMemory([FromBody] AddUserToMemoryDto addUserToMemoryDto)
         {
             string currentUsername = User.GetCurrentUserName();
+            string currentId = User.GetUserId();
 
             if (string.IsNullOrWhiteSpace(addUserToMemoryDto.MemoryId) ||
                 string.IsNullOrWhiteSpace(addUserToMemoryDto.UserName))
@@ -180,8 +181,8 @@ namespace API.Controllers
             {
                 return NotFound("Memory is not found");
             }
-
-            if (currentUsername != memory.OwnerUserName)
+            
+            if (currentId != memory.OwnerId)
             {
                 return BadRequest($"Such user({currentUsername}) has to rights no do this");
             }
@@ -213,7 +214,7 @@ namespace API.Controllers
             var memory = HttpContext.Items["memory"] as Memory;
             var user = HttpContext.Items["user"] as User;
 
-            if (memory.OwnerUserName == user.UserName)
+            if (memory.OwnerId == user.Id)
             {
                 return BadRequest("You can not remove owner from memory");
             }
@@ -231,5 +232,7 @@ namespace API.Controllers
             return Ok();
         }
 
+
+        //TODO: Create a method which will make a new owner of the memory
     }
 }

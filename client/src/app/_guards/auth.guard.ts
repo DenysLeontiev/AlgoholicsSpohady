@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AccountService } from '../_services/account.service';
 import { ToastrService } from 'ngx-toastr';
@@ -10,7 +10,8 @@ import { map } from 'rxjs/operators';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private accountService: AccountService, private toastr: ToastrService) {
+  constructor(private accountService: AccountService, private toastr: ToastrService,
+    private router: Router) {
 
   }
 
@@ -20,7 +21,8 @@ export class AuthGuard implements CanActivate {
         if (user) {
           return true;
         }
-        this.toastr.error("Потрібно увійти в аккаунт,щоб продовжити");
+        this.toastr.info("Потрібно увійти в аккаунт,щоб продовжити");
+        this.router.navigateByUrl('/');
         return false;
       })
     )

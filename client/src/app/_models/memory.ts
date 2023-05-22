@@ -6,7 +6,7 @@ export interface Memory {
     description: string;
     memoryUrl: string;
     memoryQrCode: string;
-    ownerUserName: string;
+    ownerId: string;
     dateCreated: string;
     photos: Photo[];
 }

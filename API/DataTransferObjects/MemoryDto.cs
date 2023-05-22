@@ -7,7 +7,7 @@ namespace API.DataTransferObjects
         public string Description { get; set; }
         public string MemoryUrl { get; set; }
         public string MemoryQrCode { get; set; }
-        public string OwnerUserName { get; set; }
+        public string OwnerId{ get; set; }
         public DateTime DateCreated { get; set; }
         // public List<UserDto> Users { get; set; } = new();
         public List<PhotoDto> Photos { get; set; } = new();

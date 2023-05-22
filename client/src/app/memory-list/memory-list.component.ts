@@ -25,7 +25,6 @@ export class MemoryListComponent implements OnInit {
   }
 
   loadMemories() {
-    console.log(this.userParams);
     this.memoryService.getAllMemories(this.userParams).subscribe((response) => {
       if (response.result && response.pagination) {
         this.memories = response.result
@@ -34,11 +33,6 @@ export class MemoryListComponent implements OnInit {
     }, error => {
       console.log(error);
     });
-    // this.memoryService.getAllMemories().subscribe((response) => {
-    //   this.memories = response;
-    // }, error => {
-    //   console.log(error);
-    // })
   }
 
   // this event is called every time we click on buttons which are responsible for pagination(we got them from bootstrap)
