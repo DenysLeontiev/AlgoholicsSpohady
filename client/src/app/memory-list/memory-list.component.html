@@ -1,21 +1,24 @@
 <div class="input-group mb-4">
-    <div class="input-group-prepend">
-        <button (onchange)="loadMemories()" (click)="loadMemories();" class="btn btn-success" type="button">Шукати</button>
-    </div>
-    <input [(ngModel)]="userParams.searchTerm" name="searchTerm" type="text" class="form-control" placeholder="Шукай за іменем події" aria-describedby="basic-addon1">
-    <div class="form-check">
-        <input [(ngModel)]="userParams.orderByType" name="orderByType" class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="DESC" checked>
-        <label class="form-check-label" for="exampleRadios1">
-          Спадання
-        </label>
-      </div>
-      <div class="form-check">
-        <input [(ngModel)]="userParams.orderByType" name="orderByType" class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="ASC">
-        <label class="form-check-label" for="exampleRadios2">
-          Зростання
-        </label>
-      </div>
+  <div class="input-group-prepend">
+    <button class="btn btn-success" type="button" (click)="loadMemories()">Шукати</button>
+  </div>
+  <input class="form-control" type="text" [(ngModel)]="userParams.searchTerm" name="searchTerm" placeholder="Шукай за іменем події" aria-describedby="basic-addon1">
+  <div class="sort-option">
+    <input class="form-check-input" type="radio" [(ngModel)]="userParams.orderByType" name="orderByType" id="ascRadio" value="ASC" (click)="loadMemories()">
+    <label class="form-check-label" for="ascRadio">
+      <span class="arrow-up"></span>
+      <span class="sort-label">Зростання</span>
+    </label>
+  </div>
+  <div class="sort-option">
+    <input class="form-check-input" type="radio" [(ngModel)]="userParams.orderByType" name="orderByType" id="descRadio" value="DESC" (click)="loadMemories()" checked>
+    <label class="form-check-label" for="descRadio">
+      <span class="arrow-down"></span>
+      <span class="sort-label">Спадання</span>
+    </label>
+  </div>
 </div>
+
 
 <div class="row col-12">
     <div *ngFor="let memory of memories" class="col-2">
