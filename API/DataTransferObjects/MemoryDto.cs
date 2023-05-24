@@ -11,5 +11,6 @@ namespace API.DataTransferObjects
         public DateTime DateCreated { get; set; }
         // public List<UserDto> Users { get; set; } = new();
         public List<PhotoDto> Photos { get; set; } = new();
+        public List<MessageDto> Messages { get; set; } = new();
     }
 }

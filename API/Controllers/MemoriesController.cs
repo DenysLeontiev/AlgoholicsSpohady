@@ -199,7 +199,7 @@ namespace API.Controllers
                 return NotFound("User is not found");
             }
 
-            memory.Users.Add(user);
+            memory.Users.Add(user);  //TODO: is this a correct logic
             user.Memories.Add(memory);
 
             await _repositoryManager.SaveAsync();

@@ -72,6 +72,7 @@ namespace API.Repositories
         {
             return await _context.Memories.Include(x => x.Users)
                                           .Include(x => x.Photos)
+                                        //   .Include(x => x.Messages) TODO: Do we need that actually?
                                           .FirstOrDefaultAsync(x => x.Id == id);
             // return await FindByCondition(m => m.Id.Equals(id), trackChanges);
         }

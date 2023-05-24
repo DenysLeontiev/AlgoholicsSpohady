@@ -24,6 +24,7 @@ import { EditMemoryComponent } from './edit-memory/edit-memory.component';
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { QrCodePopUpComponent } from './qr-code-pop-up/qr-code-pop-up.component';
+import { MessagesComponent } from './messages/messages.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { QrCodePopUpComponent } from './qr-code-pop-up/qr-code-pop-up.component'
     GoogleLoginComponent,
     EditMemoryComponent,
     TextInputComponent,
-    QrCodePopUpComponent
+    QrCodePopUpComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,

@@ -17,6 +17,8 @@ namespace API.Helpers
             CreateMap<Memory, MemoryDto>().ReverseMap();
 
             CreateMap<Photo, PhotoDto>().ReverseMap();
+
+            CreateMap<Message, MessageDto>().ReverseMap();
         }
     }
 }

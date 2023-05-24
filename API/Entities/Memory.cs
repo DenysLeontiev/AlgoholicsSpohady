@@ -18,5 +18,6 @@ namespace API.Entities
         public DateTime DateCreated { get; set; }
         public List<User> Users { get; set; } = new();
         public List<Photo> Photos { get; set; } = new();
+        public List<Message> Messages{ get; set; } = new();
     }
 }

@@ -1,6 +1,7 @@
 using API.Data;
 using API.Interfaces;
 using API.Interfaces.MemoryInterfaces;
+using API.Interfaces.MessageInterfaces;
 using API.Interfaces.UserInterfaces;
 
 namespace API.Repositories
@@ -10,6 +11,7 @@ namespace API.Repositories
         private readonly DataContext _context;
         private IMemoryRepository _memoryRepository;
         private IUserRepository _userRepository;
+        private IMessageRepository _messageRepository;
 
         public RepositoryManager(DataContext context)
         {
@@ -35,6 +37,16 @@ namespace API.Repositories
                     _userRepository = new UserRepository(_context);
 
                 return _userRepository;
+            }
+        }
+
+        public IMessageRepository Message
+        {
+            get
+            {
+                if(_messageRepository == null) 
+                    _messageRepository = new MessageRepository(_context);
+                return _messageRepository;
             }
         }
 

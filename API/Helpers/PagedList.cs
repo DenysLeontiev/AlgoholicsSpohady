@@ -22,7 +22,7 @@ namespace API.Helpers
         public int TotalPages { get; set; }
         public int TotalCount { get; set; }
 
-        public static PagedList<T> CreateAsync(IEnumerable<T> source, int pageNumber, int pageSize)
+        public static PagedList<T> CreateAsync(IEnumerable<T> source, int pageNumber, int pageSize) // TODO: Not async
         {
             var count = source.Count();
             var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();

@@ -28,6 +28,10 @@ namespace API.Data
                    .HasMany(m => m.Memories)
                    .WithMany(u => u.Users)
                    .UsingEntity<UserMemory>();
+
+            builder.Entity<Memory>()
+                    .HasMany(x => x.Messages)
+                    .WithOne(x => x.Memory);
         }
     }
 }

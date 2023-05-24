@@ -9,6 +9,7 @@ import { MemoryForUpdate } from '../_models/memoryForUpdate';
 import { PaginatedResult } from '../_models/pagination';
 import { map } from 'rxjs/operators';
 import { UserParams } from '../_models/userParams';
+import { getPaginatedResult, getPaginationHeaders } from './paginationHelper';
 
 @Injectable({
   providedIn: 'root'
@@ -28,46 +29,12 @@ export class MemoryService {
   }
 
   getAllMemories(userParams: UserParams) {
-    let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize, userParams.searchTerm, userParams.orderByType);
+    let params = getPaginationHeaders(userParams.pageNumber, userParams.pageSize, userParams.searchTerm, userParams.orderByType);
 
-    return this.getPaginatedResult<Memory[]>(this.baseUrl + 'memories', params);
+    return getPaginatedResult<Memory[]>(this.baseUrl + 'memories', params, this.httpClient);
   }
 
-  private getPaginatedResult<T>(url: string, params: HttpParams) {
-    const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>;
-
-    return this.httpClient.get<T>(url, { observe: 'response', params }).pipe(
-      map((response) => {
-        if (response.body) {
-          paginatedResult.result = response.body;
-        }
-        const pagination = response.headers.get('Pagination');
-        if (pagination) {
-          paginatedResult.pagination = JSON.parse(pagination);
-        }
-        return paginatedResult;
-      })
-    );
-  }
-
-  getPaginationHeaders(pageNumber: number, pageSize: number, searchTerm: string, orderByType: string) {
-    let params = new HttpParams();
-    if (pageNumber && pageSize) {
-
-      params = params.append('pageNumber', pageNumber);
-      params = params.append('pageSize', pageSize);
-    }
-
-    if(searchTerm) {
-      params = params.append("searchTerm", searchTerm);
-    }
-
-    if(orderByType) {
-      params = params.append("orderByType", orderByType);
-    }
-
-    return params;
-  }
+ 
 
   getUsersInMemory(memoryId: string) {
     return this.httpClient.get<UserInMemory[]>(this.baseUrl + 'memories/users-in-memory/' + memoryId);

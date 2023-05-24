@@ -1,3 +1,4 @@
+import { Message } from "./message";
 import { Photo } from "./photo";
 
 export interface Memory {
@@ -9,4 +10,5 @@ export interface Memory {
     ownerId: string;
     dateCreated: string;
     photos: Photo[];
+    messages: Message[];
 }

@@ -25,7 +25,7 @@ export class MemoryDetailComponent implements OnInit {
   usersInMemory: UserInMemory[] = [];
   memoryId: string | null = "";
 
-  currentUserId: string = "";
+  currentUserId: string | null = "";
 
   addUserToMemory: AddUserToMemory = {
     memoryId: '',
@@ -94,6 +94,7 @@ export class MemoryDetailComponent implements OnInit {
         this.memory = response;
         this.addUserToMemory.memoryId = this.memoryId!;
         this.removeUserFromMemory.memoryId = this.memoryId!;
+        console.log(response);
         this.galleryImages = this.getImages();
       }, error => {
         console.log(error);
