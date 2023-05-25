@@ -51,4 +51,8 @@ export class MemoryService {
   updateMemory(memoryId: string, model: MemoryForUpdate) {
     return this.httpClient.post(this.baseUrl + "memories/update-memory/" + memoryId, model);
   }
+
+  setNewOwner(memoryId: string, newOwnerId: string) {
+    return this.httpClient.post(this.baseUrl + "memories/set-new-owner/" + memoryId + "/" + newOwnerId, {});
+  }
 }

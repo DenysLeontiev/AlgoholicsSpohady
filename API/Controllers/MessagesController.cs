@@ -44,7 +44,7 @@ namespace API.Controllers
         }
 
         [HttpPost("add-message")]
-        public async Task<ActionResult> AddMessage([FromBody] CreateMessageDto createMessageDto) // TODO: replace to MessageRepos
+        public async Task<ActionResult> AddMessage([FromBody] CreateMessageDto createMessageDto) // TODO: remove to MessageRepos
         {
             if (string.IsNullOrWhiteSpace(createMessageDto.MessageText))
             {

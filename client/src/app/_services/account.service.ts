@@ -42,9 +42,8 @@ export class AccountService {
 
   LoginWithGoogle(credentials: string): Observable<any> {
     const header = new HttpHeaders().set('Content-type', 'application/json');
-    return this.http.post(this.baseUrl + "account/google-login", JSON.stringify(credentials), { headers: header, withCredentials: true });
+    return this.http.post(this.baseUrl + "account/google-account", JSON.stringify(credentials), { headers: header, withCredentials: true });
   }
-
 
   setCurrentUser(user: UserJwt) {
     localStorage.setItem('user', JSON.stringify(user));

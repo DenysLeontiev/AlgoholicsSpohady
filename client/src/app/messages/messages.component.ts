@@ -12,46 +12,33 @@ import { NgForm } from '@angular/forms';
   templateUrl: './messages.component.html',
   styleUrls: ['./messages.component.css']
 })
-export class MessagesComponent implements OnInit, AfterViewChecked  {
+export class MessagesComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('messagesContainer') messagesContainer!: ElementRef; // inputForm
   // @ViewChild('inputForm') inputForm!: NgForm; // inputForm
+
+  @Input() messages: Message[] | undefined = [];
+  @Input() pagination?: Pagination;
 
   @Input() memoryId: string | null = "";
   @Input() currentUserId: string | null = "";
 
   createMessage: CreateMessage = {} as CreateMessage;
-  
-  messages: Message[] | undefined = [];
-  pagination?: Pagination;
-  pageNumber: number = 1;
-  pageSize: number = 100;
 
-  constructor(private messageService: MessageService, private activatedRoute: ActivatedRoute,
-            private accountService: AccountService) { }
+  constructor(private messageService: MessageService, private activatedRoute: ActivatedRoute) { }
 
   ngAfterViewChecked(): void {
     this.scrollToBottom();
-
   }
 
   ngOnInit(): void {
-    this.loadMessages();
+    this.createMessage.memoryId = this.memoryId!;
   }
 
-  loadMessages() {
-    if (!this.memoryId) return;
-    this.messageService.getMessagesForMemory(this.pageNumber, this.pageSize, this.memoryId).subscribe((response) => {
-      this.messages = response.result;
-      this.pagination = response.pagination;
-      this.createMessage.memoryId = this.memoryId!;
-    });
-
-  }
-
-  sendMessage(){
-    if(this.createMessage.messageText) {
+  sendMessage() {
+    if (this.createMessage.messageText) {
       this.messageService.createMessage(this.createMessage).subscribe((response) => {
+        console.log(response);
       }, error => {
         console.log(error);
       })
@@ -63,10 +50,10 @@ export class MessagesComponent implements OnInit, AfterViewChecked  {
     container.scrollTop = container.scrollHeight;
   }
 
-  pageChanged(event: any) {
-    if (this.pageNumber !== event.page) {
-      this.pageNumber = event.page;
-      this.loadMessages();
-    }
-  }
+  // pageChanged(event: any) {
+  //   if (this.pageNumber !== event.page) {
+  //     this.pageNumber = event.page;
+  //     this.loadMessages();
+  //   }
+  // }
 }

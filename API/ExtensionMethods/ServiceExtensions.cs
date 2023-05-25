@@ -29,11 +29,12 @@ namespace API.ExtensionMethods
         {
             services.AddIdentity<User, IdentityRole>(options =>
             {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6; // TODO: Change on production (14.05.2023)
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
+                // options.Password.RequireDigit = false;
+                // options.Password.RequiredLength = 6; // TODO: Change on production (14.05.2023)
+                // options.Password.RequireLowercase = false;
+                // options.Password.RequireNonAlphanumeric = false;
+                // options.Password.RequireUppercase = false;
+                // options.Password.Re
                 options.User.RequireUniqueEmail = true;
 
             }).AddEntityFrameworkStores<DataContext>();

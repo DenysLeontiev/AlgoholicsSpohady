@@ -2,6 +2,7 @@
     <div class="form-container sign-in-container mt-5">
         <form [formGroup]="registerForm">
             <div class="social-container">
+                <a routerLink="/google-account" class="social"><i class="fa fa-google"></i></a>
                 <a href="#" class="social"><i class="fa fa-github"></i></a>
                 <a href="#" class="social"><i class="fa fa-facebook"></i></a>
                 <a href="#" class="social"><i class="fa fa-instagram"></i></a>
@@ -24,9 +25,6 @@
         </div>
     </div>
 </div>
-
-<h1>Form Value: {{registerForm.value}}</h1>
-<h1>Form Status: {{registerForm.status}}</h1>
 
 <footer>
     <p>

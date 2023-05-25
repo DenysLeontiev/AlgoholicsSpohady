@@ -115,5 +115,97 @@ namespace API.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpPost("google-account")]
+        public async Task<ActionResult> GoogleAccount([FromBody] string credential)
+        {
+            string clientId = _config.GetSection("ClientId").Value;
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { clientId }
+            };
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(credential, settings);
+
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+
+            UserJwtDto userJwtDto = new UserJwtDto();
+
+            if (user == null)
+            {
+                var userToCreate = new User
+                {
+                    UserName = payload.Name,
+                    Email = payload.Email,
+                    NormalizedEmail = payload.Email.ToUpper(),
+                    NormalizedUserName = payload.Name.ToUpper(),
+                };
+
+                await _context.Users.AddAsync(userToCreate);
+                await _context.SaveChangesAsync();
+
+                userJwtDto = new UserJwtDto
+                {
+                    Username = userToCreate.UserName,
+                    Email = userToCreate.Email,
+                    Id = userToCreate.Id,
+                    Token = _tokenHandler.CreateToken(userToCreate),
+                };
+
+                return Ok(userJwtDto);
+            }
+            else
+            {
+                userJwtDto = new UserJwtDto
+                {
+                    Username = user.UserName,
+                    Email = user.Email,
+                    Id = user.Id,
+                    Token = _tokenHandler.CreateToken(user),
+                };
+                return Ok(userJwtDto);
+            }
+        }
+
+        // TODO: Make a universal method to login/regitser(if account does not exists at the time)
+
+        [HttpPost("google-register")]
+        public async Task<ActionResult> RegisterWithGoogle([FromBody] string credential)
+        {
+            string clientId = _config.GetSection("ClientId").Value;
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { clientId }
+            };
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(credential, settings);
+
+            var userToCreate = new User
+            {
+                UserName = payload.Name,
+                Email = payload.Email,
+                NormalizedEmail = payload.Email.ToUpper(),
+                NormalizedUserName = payload.Name.ToUpper(),
+            };
+
+            var result = await _userManager.CreateAsync(userToCreate);
+
+            await _context.Users.AddAsync(userToCreate);
+            await _context.SaveChangesAsync();
+
+            // if(!result.Succeeded)
+            // {
+            //     return BadRequest("Can't register");
+            // }
+
+            var userJwt = new UserJwtDto
+            {
+                Username = userToCreate.UserName,
+                Email = userToCreate.Email,
+                Id = userToCreate.Id,
+                Token = _tokenHandler.CreateToken(userToCreate),
+            };
+            return Ok(userJwt);
+        }
     }
 }

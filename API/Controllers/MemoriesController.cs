@@ -1,15 +1,9 @@
-using System.Buffers;
-using System.Collections;
-using System.Net;
-using System.Net.Mail;
-using System.Security.Claims;
 using API.ActionFilters;
 using API.DataTransferObjects;
 using API.Entities;
 using API.ExtensionMethods;
 using API.Helpers;
 using API.Interfaces;
-using API.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -234,5 +228,25 @@ namespace API.Controllers
 
 
         //TODO: Create a method which will make a new owner of the memory
+        [ServiceFilter(typeof(MemoryWithMemoryIdExists))]
+        [HttpPost("set-new-owner/{memoryId}/{newOwnerId}")]
+        public async Task<ActionResult> SetNewOwner(string newOwnerId, string memoryId)
+        {
+            var memory = HttpContext.Items["memory"] as Memory;
+
+            var currentUserId = User.GetUserId();
+
+            if(currentUserId == newOwnerId)
+            {
+                return BadRequest();
+            }
+
+            memory.OwnerId = newOwnerId;
+
+            await _repositoryManager.SaveAsync();
+
+            return Ok("New owner is set!");
+        }
+
     }
 }

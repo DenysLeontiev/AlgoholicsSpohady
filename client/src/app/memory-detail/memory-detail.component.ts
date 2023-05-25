@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Memory } from '../_models/memory';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MemoryService } from '../_services/memory.service';
@@ -10,6 +10,10 @@ import { ToastrService } from 'ngx-toastr';
 import { RemoveUserFromMemory } from '../_models/removeUserFromMemory';
 import { AccountService } from '../_services/account.service';
 import { map } from 'rxjs/operators';
+import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
+import { MessageService } from '../_services/message.service';
+import { Message } from '../_models/message';
+import { Pagination } from '../_models/pagination';
 
 @Component({
   selector: 'app-memory-detail',
@@ -17,6 +21,10 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./memory-detail.component.css']
 })
 export class MemoryDetailComponent implements OnInit {
+
+  @ViewChild('memberTabs') memberTabs?: TabsetComponent;
+  activeTab?: TabDirective;
+  areMessagesLoad: boolean = false;
 
   memory: Memory | undefined;
   imagePath: SafeResourceUrl = "";
@@ -26,6 +34,11 @@ export class MemoryDetailComponent implements OnInit {
   memoryId: string | null = "";
 
   currentUserId: string | null = "";
+
+  messages: Message[] | undefined = [];
+  messagePagination?: Pagination;
+  messagPageNumber: number = 1;
+  messagePageSize: number = 1000;
 
   addUserToMemory: AddUserToMemory = {
     memoryId: '',
@@ -42,13 +55,12 @@ export class MemoryDetailComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private router: Router,
     private toastr: ToastrService,
-    private accountService: AccountService) { }
+    private accountService: AccountService,
+    private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.getCurrentUserId();
-    console.log(this.currentUserId);
     this.getMemoryFromRoute();
-    this.loadUsersInMemory();
 
 
     this.galleryOptions = [
@@ -94,7 +106,6 @@ export class MemoryDetailComponent implements OnInit {
         this.memory = response;
         this.addUserToMemory.memoryId = this.memoryId!;
         this.removeUserFromMemory.memoryId = this.memoryId!;
-        console.log(response);
         this.galleryImages = this.getImages();
       }, error => {
         console.log(error);
@@ -106,7 +117,6 @@ export class MemoryDetailComponent implements OnInit {
     if (this.memoryId) {
       this.memoryService.getUsersInMemory(this.memoryId).subscribe((response) => {
         this.usersInMemory = response;
-        console.log(response);
       }, error => {
         console.log(error);
       })
@@ -143,5 +153,37 @@ export class MemoryDetailComponent implements OnInit {
       console.log(error);
       this.toastr.error(error);
     })
+  }
+
+  setNewOwner(ownerId: string) {
+    return this.memoryService.setNewOwner(this.memoryId!, ownerId).subscribe((response) => {
+      this.toastr.show("Тепер у цього Спогада новий власник ;)");
+      console.log(response);
+      window.location.reload();
+    }, error => {
+      console.log(error);
+    });
+  }
+
+  loadMessages() {
+    if (!this.memoryId) return;
+    this.messageService.getMessagesForMemory(this.messagPageNumber, this.messagePageSize, this.memoryId).subscribe((response) => {
+      this.messages = response.result;
+      this.messagePagination = response.pagination;
+      console.log(response);
+    });
+  }
+
+  onTabActivated(data: TabDirective) {
+    this.activeTab = data;
+    if(this.activeTab.heading === 'Обговорення') {
+      this.loadMessages();
+    }
+    if(this.activeTab.heading === 'Учасники') {
+      this.loadUsersInMemory();
+    }
+    if(this.activeTab.heading === 'Фото') {
+      this.loadUsersInMemory();
+    }
   }
 }

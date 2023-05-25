@@ -29,7 +29,7 @@
             <tab heading='Фото'>
                 <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
             </tab>
-            <tab heading='Учасники'>
+            <tab heading='Учасники' (selectTab)="onTabActivated($event)">
                 <div class="input-container">
                     <div class="hint-container">
                         <div class="hint me-2"><i class="fa fa-question"></i></div>
@@ -47,15 +47,16 @@
                             <div *ngIf="memory?.ownerId != userInMemory.id">
                                 <button class="red-button"
                                     (click)="removeUserMemory(userInMemory.userName)">Видалити</button>
-                                <button class="green-button ms-1"
-                                    (click)="removeUserMemory(userInMemory.userName)">Зробити головним</button>
+                                <button class="green-button ms-1" (click)="setNewOwner(userInMemory.id)">Зробити
+                                    головним</button>
                             </div>
                         </ng-container>
                     </li>
                 </ul>
             </tab>
-            <tab heading="Обговорення">
-                <app-messages [memoryId]="memoryId" [currentUserId]="currentUserId"></app-messages>
+            <tab heading="Обговорення" (selectTab)="onTabActivated($event)">
+                <app-messages [memoryId]="memoryId" [currentUserId]="currentUserId" [messages]="messages"
+                    [pagination]="messagePagination"></app-messages>
             </tab>
             <tab heading='Редагувати'>
                 <app-edit-memory [memory]="memory"></app-edit-memory>
