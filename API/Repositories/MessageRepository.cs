@@ -14,6 +14,7 @@ namespace API.Repositories
     {
         public MessageRepository(DataContext context) : base(context)
         {
+            
         }
 
         public void CreateMessage(Message message)
@@ -26,13 +27,25 @@ namespace API.Repositories
             Delete(message);
         }
 
-        public async Task<PagedList<Message>> GetMessagesForMemory(string memoryId, MessageParams messageParams)
+        public async Task<PagedList<Message>> GetMessagesForMemory(string memoryId, MessageParams messageParams) // messageParams = null
         {
             var memory = await _context.Memories.Include(x => x.Messages)
                                           .Include(x => x.Users)
                                           .FirstOrDefaultAsync(m => m.Id == memoryId);
             var messagesToReturn = memory.Messages.OrderBy(x => x.DateSend);
             return PagedList<Message>.CreateAsync(messagesToReturn, messageParams.PageNumber, messageParams.PageSize);
+        }
+
+        public async Task<IEnumerable<Message>> GetMessagesForMemoryWithNoPagination(string memoryId) // messageParams = null
+        {
+            // var memory = await _context.Memories.Include(x => x.Messages)
+            //                               .Include(x => x.Users)
+            //                               .FirstOrDefaultAsync(m => m.Id == memoryId);
+
+            var memory = await _context.Memories.Include(x => x.Messages).FirstOrDefaultAsync(m => m.Id == memoryId);
+
+            var messagesToReturn = memory.Messages.OrderBy(x => x.DateSend).ToList();
+            return messagesToReturn;
         }
     }
 }

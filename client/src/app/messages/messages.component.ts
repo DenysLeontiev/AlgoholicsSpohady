@@ -25,7 +25,8 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   createMessage: CreateMessage = {} as CreateMessage;
 
-  constructor(private messageService: MessageService, private activatedRoute: ActivatedRoute) { }
+  constructor(public messageService: MessageService,
+    private activatedRoute: ActivatedRoute) { }
 
   ngAfterViewChecked(): void {
     this.scrollToBottom();
@@ -37,13 +38,21 @@ export class MessagesComponent implements OnInit, AfterViewChecked {
 
   sendMessage() {
     if (this.createMessage.messageText) {
-      this.messageService.createMessage(this.createMessage).subscribe((response) => {
-        console.log(response);
-      }, error => {
-        console.log(error);
-      })
+      this.messageService.createMessage(this.createMessage).then(() => {
+        this.createMessage.messageText = ''; // reset text
+      });
     }
   }
+
+  // sendMessage() {
+  //   if (this.createMessage.messageText) {
+  //     this.messageService.createMessage(this.createMessage).subscribe((response) => {
+  //       console.log(response);
+  //     }, error => {
+  //       console.log(error);
+  //     })
+  //   }
+  // }
 
   scrollToBottom() {
     const container = this.messagesContainer.nativeElement;

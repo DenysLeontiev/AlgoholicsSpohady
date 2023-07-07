@@ -1,4 +1,5 @@
 using API.ExtensionMethods;
+using API.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,5 +38,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<PresenceHub>("/hubs/presence"); // configure SignalR for PresenceTracker
+app.MapHub<MessageHub>("/hubs/message"); // configure SignalR for Messaging
 
 app.Run();

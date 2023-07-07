@@ -25,18 +25,29 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
+        // [ServiceFilter(typeof(MemoryWithMemoryIdExists))]
+        // [HttpGet("{memoryId}")]
+        // public async Task<ActionResult> GetMessagesForMemory([FromQuery] MessageParams messageParams, string memoryId)
+        // {
+        //     var messages = await _repositoryManager.Message.GetMessagesForMemory(memoryId, messageParams);
+
+        //     Response.AddPaginationHeaders(new PaginationHeader(
+        //         messages.CurrentPage,
+        //         messages.PageSize,
+        //         messages.TotalCount,
+        //         messages.TotalPages));
+
+
+        //     var messagesToReturn = _mapper.Map<IEnumerable<MessageDto>>(messages);
+
+        //     return Ok(messagesToReturn);
+        // }
+
         [ServiceFilter(typeof(MemoryWithMemoryIdExists))]
         [HttpGet("{memoryId}")]
-        public async Task<ActionResult> GetMessagesForMemory([FromQuery] MessageParams messageParams, string memoryId)
+        public async Task<ActionResult> GetMessagesForMemory(string memoryId)
         {
-            var messages = await _repositoryManager.Message.GetMessagesForMemory(memoryId, messageParams);
-
-            Response.AddPaginationHeaders(new PaginationHeader(
-                messages.CurrentPage,
-                messages.PageSize,
-                messages.TotalCount,
-                messages.TotalPages));
-
+            var messages = await _repositoryManager.Message.GetMessagesForMemoryWithNoPagination(memoryId);
 
             var messagesToReturn = _mapper.Map<IEnumerable<MessageDto>>(messages);
 

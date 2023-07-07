@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Data
 {
-    public class DataContext : IdentityDbContext 
+    public class DataContext : IdentityDbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            
+
         }
 
         public DbSet<User> Users { get; set; }
@@ -28,10 +28,19 @@ namespace API.Data
                    .HasMany(m => m.Memories)
                    .WithMany(u => u.Users)
                    .UsingEntity<UserMemory>();
+            
+            builder.Entity<Memory>()
+                   .HasMany(m => m.Users)
+                   .WithMany(u => u.Memories)
+                   .UsingEntity<UserMemory>();
 
             builder.Entity<Memory>()
-                    .HasMany(x => x.Messages)
-                    .WithOne(x => x.Memory);
+             .HasMany(x => x.Messages)
+             .WithOne(x => x.Memory);
+
+            // builder.Entity<Memory>()
+            //         .HasMany(x => x.Messages)
+            //         .WithOne(x => x.Memory);
         }
     }
 }

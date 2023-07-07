@@ -55,8 +55,8 @@
                 </ul>
             </tab>
             <tab heading="Обговорення" (selectTab)="onTabActivated($event)">
-                <app-messages [memoryId]="memoryId" [currentUserId]="currentUserId" [messages]="messages"
-                    [pagination]="messagePagination"></app-messages>
+                <app-messages [memoryId]="memoryId"  [currentUserId]="currentUserId" 
+                    [pagination]="messagePagination"></app-messages> <!-- [messages]="messages" TODO: IT IS REMOVED!!!--> 
             </tab>
             <tab heading='Редагувати'>
                 <app-edit-memory [memory]="memory"></app-edit-memory>
@@ -64,3 +64,5 @@
         </tabset>
     </div>
 </div>
+
+<!-- [messages]="messages" -->

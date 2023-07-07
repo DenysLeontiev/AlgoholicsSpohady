@@ -56,7 +56,27 @@ namespace API.ExtensionMethods
                         ValidateIssuer = false,
                         ValidateAudience = false,
                     };
+                    
+                    // because signalR by default does not send Bearer token and we have to do that this way:
+                    opts.Events = new JwtBearerEvents 
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // If the request is for our hub...
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/hubs")))
+                            {
+                                // Read the token out of the query string
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
+
+
         }
 
         public static void ConfigureServices(this IServiceCollection services)
@@ -66,6 +86,10 @@ namespace API.ExtensionMethods
             services.AddScoped<IQrCodeGenerator, QrCodeGenerator>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddCors();
+
+            services.AddSignalR(opts => {
+                opts.EnableDetailedErrors = true; // to have more precise errors description
+            }); // add SignalR
         }
 
         public static void ConfigureCloudinaryAccount(this IServiceCollection services, IConfiguration configuration)

@@ -12,5 +12,6 @@ namespace API.Interfaces.MessageInterfaces
         void CreateMessage(Message message);
         void DeleteMessage(Message message);
         Task<PagedList<Message>> GetMessagesForMemory(string memoryId, MessageParams messageParams);
+        Task<IEnumerable<Message>> GetMessagesForMemoryWithNoPagination(string memoryId);
     }
 }

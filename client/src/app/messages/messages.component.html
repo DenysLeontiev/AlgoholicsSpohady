@@ -1,6 +1,6 @@
 <div class="messenger mt-3">
     <div class="messages-container" #messagesContainer>
-        <div *ngFor="let message of messages" class="message"
+        <div *ngFor="let message of (messageService.memoryMessages$ | async)" class="message"
             [ngClass]="{'current-user': message.senderId === currentUserId}">
             <div class="message-content">
                 <span class="message-sender"><b>{{ message.senderUsername | titlecase }}</b></span>
@@ -12,7 +12,7 @@
     </div>
 
     <div class="message-input">
-        <input type="text" [(ngModel)]="createMessage.messageText" name="messageText" placeholder="Привіт,Світ!">
+        <input type="text" [(ngModel)]="createMessage.messageText" name="messageText" placeholder="Написати..." autocomplete="off">
         <button (click)="sendMessage()">Написати</button>
     </div>
 </div>

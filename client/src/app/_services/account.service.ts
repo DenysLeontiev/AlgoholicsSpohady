@@ -4,6 +4,7 @@ import { UserJwt } from '../_models/userJwt';
 import { BehaviorSubject, Observable, ReplaySubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { PresenceService } from './presence.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,8 @@ export class AccountService {
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(private http: HttpClient,
-    private router: Router) { }
+    private router: Router,
+    private presenceService: PresenceService) { }
 
   register(model: any) {
     return this.http.post<UserJwt>(this.baseUrl + 'account/register', model).pipe(
@@ -48,6 +50,8 @@ export class AccountService {
   setCurrentUser(user: UserJwt) {
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSource.next(user);
+
+    this.presenceService.startHubConnection(user);
   }
 
   logout() {

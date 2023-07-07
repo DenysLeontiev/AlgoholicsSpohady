@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Memory } from '../_models/memory';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MemoryService } from '../_services/memory.service';
@@ -9,18 +9,19 @@ import { AddUserToMemory } from '../_models/addUserToMemory';
 import { ToastrService } from 'ngx-toastr';
 import { RemoveUserFromMemory } from '../_models/removeUserFromMemory';
 import { AccountService } from '../_services/account.service';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { MessageService } from '../_services/message.service';
 import { Message } from '../_models/message';
 import { Pagination } from '../_models/pagination';
+import { UserJwt } from '../_models/userJwt';
 
 @Component({
   selector: 'app-memory-detail',
   templateUrl: './memory-detail.component.html',
   styleUrls: ['./memory-detail.component.css']
 })
-export class MemoryDetailComponent implements OnInit {
+export class MemoryDetailComponent implements OnInit, OnDestroy {
 
   @ViewChild('memberTabs') memberTabs?: TabsetComponent;
   activeTab?: TabDirective;
@@ -38,7 +39,7 @@ export class MemoryDetailComponent implements OnInit {
   messages: Message[] | undefined = [];
   messagePagination?: Pagination;
   messagPageNumber: number = 1;
-  messagePageSize: number = 1000;
+  messagePageSize: number = 100;
 
   addUserToMemory: AddUserToMemory = {
     memoryId: '',
@@ -50,18 +51,25 @@ export class MemoryDetailComponent implements OnInit {
     userName: '',
   }
 
+  userJwt?: UserJwt;
+
   constructor(private memoryService: MemoryService,
     private activatedRoute: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private router: Router,
     private toastr: ToastrService,
     private accountService: AccountService,
-    private messageService: MessageService) { }
+    private messageService: MessageService) {
+    this.accountService.currentUser$.pipe(take(1)).subscribe((userJwt) => {
+      if (userJwt) {
+        this.userJwt = userJwt;
+      }
+    })
+  }
 
   ngOnInit(): void {
     this.getCurrentUserId();
     this.getMemoryFromRoute();
-
 
     this.galleryOptions = [
       {
@@ -73,6 +81,9 @@ export class MemoryDetailComponent implements OnInit {
         preview: false
       },
     ]
+  }
+
+  ngOnDestroy(): void {
   }
 
   getCurrentUserId() {
@@ -165,24 +176,36 @@ export class MemoryDetailComponent implements OnInit {
     });
   }
 
+  // loadMessages() {
+  //   if (!this.memoryId) return;
+  //   this.messageService.getMessagesForMemory(this.messagPageNumber, this.messagePageSize, this.memoryId).subscribe((response) => {
+  //     this.messages = response.result;
+  //     this.messagePagination = response.pagination;
+
+  //     // this.messages = response;
+  //     console.log(response);
+  //   });
+  // }
+
   loadMessages() {
     if (!this.memoryId) return;
-    this.messageService.getMessagesForMemory(this.messagPageNumber, this.messagePageSize, this.memoryId).subscribe((response) => {
-      this.messages = response.result;
-      this.messagePagination = response.pagination;
+    this.messageService.getMessagesForMemory(this.memoryId).subscribe((response) => {
+      this.messages = response;
       console.log(response);
     });
   }
 
   onTabActivated(data: TabDirective) {
     this.activeTab = data;
-    if(this.activeTab.heading === 'Обговорення') {
-      this.loadMessages();
+    if (this.activeTab.heading === 'Обговорення' && this.userJwt && this.memoryId) {
+      // this.loadMessages();
+      this.messageService.createHubConnection(this.userJwt, this.memoryId);
     }
-    if(this.activeTab.heading === 'Учасники') {
+
+    if (this.activeTab.heading === 'Учасники') {
       this.loadUsersInMemory();
     }
-    if(this.activeTab.heading === 'Фото') {
+    if (this.activeTab.heading === 'Фото') {
       this.loadUsersInMemory();
     }
   }
