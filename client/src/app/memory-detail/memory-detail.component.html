@@ -30,17 +30,17 @@
                 <ngx-gallery [options]="galleryOptions" [images]="galleryImages" class="ngx-gallery"></ngx-gallery>
             </tab>
             <tab heading='Учасники' (selectTab)="onTabActivated($event)">
-                <div class="input-container">
+                <div class="input-container" *ngIf="memory?.ownerId == currentUserId">
                     <div class="hint-container">
                         <div class="hint me-2"><i class="fa fa-question"></i></div>
                         <div class="hint-text">Додайте користувача за його іменем</div>
                     </div>
                     <input [(ngModel)]="addUserToMemory.userName" name="userName" type="text" class="form-control mt-2"
                         style="max-width: 300px;" placeholder="Ім'я">
-                    <button class="btn btn-success mt-2" (click)="addUserMemory()">Додати</button>
+                    <button class="btn btn-success mt-2" (click)="addNewUserToMemory()">Додати</button>
                 </div>
                 <ul class="beautiful-list">
-                    <li *ngFor="let userInMemory of usersInMemory">
+                    <li *ngFor="let userInMemory of (memoryService.usersInMemory$ | async)">
                         <span>{{userInMemory.userName | titlecase}}</span>
                         <span>{{ userInMemory.email }}</span>
                         <ng-container *ngIf="memory?.ownerId == currentUserId">

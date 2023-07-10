@@ -27,7 +27,7 @@ export class MessageService {
   createHubConnection(userJwt: UserJwt, memoryId: string) {
     // debugger;
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(this.hubUrl + "message?memoryId=" + memoryId, {skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets, accessTokenFactory: async () => userJwt.token })
+      .withUrl(this.hubUrl + "message?memoryId=" + memoryId, { accessTokenFactory: async () => userJwt.token }) // skipNegotiation: true, transport: signalR.HttpTransportType.WebSockets,
       .withAutomaticReconnect()
       .build();
 
@@ -35,7 +35,8 @@ export class MessageService {
       console.log(error);
     })
 
-    this.hubConnection.on("ReceiveMemoryMessages", (messages) => {;
+    this.hubConnection.on("ReceiveMemoryMessages", (messages) => {
+      ;
       this.memoryMessagesSource.next(messages);
     });
 
@@ -47,7 +48,7 @@ export class MessageService {
   }
 
   stopHubConnection() {
-    if(this.hubConnection) {
+    if (this.hubConnection) {
       this.hubConnection.stop();
     }
   }

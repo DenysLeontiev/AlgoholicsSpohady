@@ -27,20 +27,12 @@ namespace API.SignalR
             var httpContext = Context.GetHttpContext();
             var memoryId = httpContext.Request.Query["memoryId"];
             var groupName = GetGroupName(memoryId);
+            
 
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
 
             var messages = await _repositoryManager.Message.GetMessagesForMemoryWithNoPagination(memoryId);
             var messagesToReturn = _mapper.Map<IEnumerable<MessageDto>>(messages);
-
-            // await Clients.Group(groupName).SendAsync("ReceiveMemoryMessages", messages);
-
-            // var jsonOptions = new JsonSerializerOptions
-            // {
-            //     ReferenceHandler = ReferenceHandler.Preserve
-            // };
-
-            // var serializedMessages = JsonSerializer.Serialize(messages, jsonOptions);
 
             await Clients.Group(groupName).SendAsync("ReceiveMemoryMessages", messagesToReturn);
         }
@@ -49,7 +41,7 @@ namespace API.SignalR
         {
             if (string.IsNullOrWhiteSpace(createMessageDto.MessageText))
             {
-                throw new HubException(); // Emty message
+                throw new HubException(); // Empty message
             }
 
             var memory = await _repositoryManager.Memory.GetMemoryByIdAsync(createMessageDto.MemoryId, true);
@@ -87,7 +79,6 @@ namespace API.SignalR
 
             var groupName = GetGroupName(createMessageDto.MemoryId);
             await Clients.Group(groupName).SendAsync("SendNewMessage", _mapper.Map<MessageDto>(message));
-
         }
 
         private string GetGroupName(string memoryId)

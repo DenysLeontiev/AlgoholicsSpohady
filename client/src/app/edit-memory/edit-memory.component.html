@@ -1,22 +1,21 @@
-<!-- <div class="col-8">
-    <div class="alert alert-info" *ngIf="editForm?.dirty">
-        <strong>Information: </strong> You have made changes.  Any unsaved changes will be lost
+<div class="col-8 mt-5" style="margin-left: 25%;">
+    <div class="alert alert-info" *ngIf="editForm.dirty">
+        <strong>Увага: </strong> Усі незбережені зміни будуть втрачені
     </div>
-</div> -->
+</div>
 
-<form #editMemoryFrom="ngForm" class="card-form">
+<form [formGroup]="editForm" class="card-form">
     <div class="input">
-        <input  type="text" class="input-field" [(ngModel)]="model.title" name="title" required value="{{memory?.title}}" />
+        <input formControlName="title" type="text" class="input-field" name="title" required />
         <label class="input-label">Заголовок</label>
     </div>
 
     <div class="input">
-        <textarea [(ngModel)]="model.description" name="description" type="text" class="input-field" required
-            value="{{memory?.description}}"></textarea>
+        <textarea formControlName="description" name="description" type="text" class="input-field" required></textarea>
         <label class="input-label">Опис</label>
     </div>
 
     <div class="action">
-        <button class="action-button" (click)="updateMemory()">Редагувати</button>
+        <button class="action-button" [disabled]="!editForm.valid" (click)="updateMemory()">Редагувати</button>
     </div>
 </form>

@@ -54,6 +54,7 @@ namespace API.Controllers
             return Ok(messagesToReturn);
         }
 
+        // NO LONGER USED -- REPLACED BY SIGNALR
         [HttpPost("add-message")]
         public async Task<ActionResult> AddMessage([FromBody] CreateMessageDto createMessageDto) // TODO: remove to MessageRepos
         {

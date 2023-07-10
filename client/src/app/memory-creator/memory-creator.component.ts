@@ -15,6 +15,7 @@ export class MemoryCreatorComponent implements OnInit {
   isPopUpActive: boolean = false;
   imagePath: SafeResourceUrl = "";
   selectedFiles: File[] = [];
+  
   memoryForCreation: MemoryForCreation = {
     title: '',
     description: '',

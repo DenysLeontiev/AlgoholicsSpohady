@@ -41,5 +41,6 @@ app.MapControllers();
 
 app.MapHub<PresenceHub>("/hubs/presence"); // configure SignalR for PresenceTracker
 app.MapHub<MessageHub>("/hubs/message"); // configure SignalR for Messaging
+app.MapHub<UsersInMemoryHub>("/hubs/users-in-memory"); // configure SignalR for Messaging
 
 app.Run();

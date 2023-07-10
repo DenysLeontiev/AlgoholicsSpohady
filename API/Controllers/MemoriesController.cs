@@ -69,7 +69,7 @@ namespace API.Controllers
 
         [ServiceFilter(typeof(MemoryWithMemoryIdExists))]
         [HttpGet("users-in-memory/{memoryId}")]
-        public ActionResult GetUsersInMemory(string memoryId)
+        public ActionResult GetUsersInMemory(string memoryId) // NO LONGER USED -- REPLACED BY SIGNALR
         {
             string fieldsString = "Id,UserName,Email";
             // var memory = await _repositoryManager.Memory.GetMemoryByIdAsync(memoryId, trackChanges: false);
@@ -92,7 +92,6 @@ namespace API.Controllers
         [HttpPost("add-memory")]
         public async Task<ActionResult> CreateMemory([FromForm] MemoryForCreationDto memoryForCreationDto)
         {
-            // var .currentUsernameTest = User.FindFirst("name")?.Value;
             var currentId = User.GetUserId();
             var currentUsername = User.GetCurrentUserName();
             var user = await _repositoryManager.User.GetUserByIdAsync(currentId, true);
@@ -178,7 +177,7 @@ namespace API.Controllers
             
             if (currentId != memory.OwnerId)
             {
-                return BadRequest($"Such user({currentUsername}) has to rights no do this");
+                return BadRequest($"Such user({currentUsername}) has no rights to do this");
             }
 
             var user = await _repositoryManager.User.GetUserByUsernameAsync(addUserToMemoryDto.UserName, true);

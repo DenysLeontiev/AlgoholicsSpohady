@@ -40,7 +40,7 @@ import { MessagesComponent } from './messages/messages.component';
     EditMemoryComponent,
     TextInputComponent,
     QrCodePopUpComponent,
-    MessagesComponent
+    MessagesComponent,
   ],
   imports: [
     BrowserModule,

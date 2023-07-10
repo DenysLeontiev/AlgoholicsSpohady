@@ -15,6 +15,7 @@ import { MessageService } from '../_services/message.service';
 import { Message } from '../_models/message';
 import { Pagination } from '../_models/pagination';
 import { UserJwt } from '../_models/userJwt';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-memory-detail',
@@ -53,7 +54,7 @@ export class MemoryDetailComponent implements OnInit, OnDestroy {
 
   userJwt?: UserJwt;
 
-  constructor(private memoryService: MemoryService,
+  constructor(public memoryService: MemoryService,
     private activatedRoute: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private router: Router,
@@ -84,6 +85,8 @@ export class MemoryDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.memoryService.stopHubConnection();
+    this.messageService.stopHubConnection();
   }
 
   getCurrentUserId() {
@@ -144,34 +147,61 @@ export class MemoryDetailComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/memories');
   }
 
-  addUserMemory() {
-    return this.memoryService.addUserToMemory(this.addUserToMemory).subscribe((response) => {
-      this.toastr.info(`Користувача ${this.addUserToMemory.userName} додано до цього спогаду як учасника`);
-      window.location.reload();
-    }, error => {
+  // addUserMemory() {
+  //   return this.memoryService.addUserToMemory(this.addUserToMemory).subscribe((response) => {
+  //     this.toastr.info(`Користувача ${this.addUserToMemory.userName} додано до цього спогаду як учасника`);
+  //     window.location.reload();
+  //   }, error => {
+  //     console.log(error);
+  //     this.toastr.error("Сталася помилка.Користувача не додано");
+  //   });
+  // }
+
+  addNewUserToMemory() {
+    this.memoryService.addUserToMemory(this.addUserToMemory).then((error) => {
+      this.toastr.success("Користувача - " + this.addUserToMemory.userName + " - додано до Спогаду");
+      this.addUserToMemory.userName = '';
+    }).catch((error) => {
       console.log(error);
-      this.toastr.error("Сталася помилка.Користувача не додано");
-    });
+    })
   }
+
+  // removeUserMemory(userName: string) {
+  //   this.removeUserFromMemory.userName = userName;
+
+  //   this.memoryService.removeUserFromMemory(this.removeUserFromMemory).subscribe((response) => {
+  //     this.toastr.info(`Користувача під іменем ${userName} видалено`);
+  //     window.location.reload();
+  //   }, error => {
+  //     console.log(error);
+  //     this.toastr.error(error);
+  //   })
+  // }
 
   removeUserMemory(userName: string) {
     this.removeUserFromMemory.userName = userName;
 
-    this.memoryService.removeUserFromMemory(this.removeUserFromMemory).subscribe((response) => {
-      this.toastr.info(`Користувача під іменем ${userName} видалено`);
-      window.location.reload();
-    }, error => {
-      console.log(error);
-      this.toastr.error(error);
-    })
+    this.memoryService.removeUserFromMemory(this.removeUserFromMemory)?.then(() => {
+      this.toastr.info("Користувача " + userName + " - видалено зі Спогаду");
+      console.log("User is removed");
+    });
   }
 
+  // setNewOwner(ownerId: string) {
+  //   return this.memoryService.setNewOwner(this.memoryId!, ownerId).subscribe((response) => {
+  //     this.toastr.show("Тепер у цього Спогада новий власник ;)");
+  //     console.log(response);
+  //     window.location.reload();
+  //   }, error => {
+  //     console.log(error);
+  //   });
+  // }
+
   setNewOwner(ownerId: string) {
-    return this.memoryService.setNewOwner(this.memoryId!, ownerId).subscribe((response) => {
-      this.toastr.show("Тепер у цього Спогада новий власник ;)");
-      console.log(response);
+    return this.memoryService.setNewOwner(this.memoryId!, ownerId).then(() => {
+      console.log("New memory owner is set");
       window.location.reload();
-    }, error => {
+    }).catch((error) => {
       console.log(error);
     });
   }
@@ -199,12 +229,20 @@ export class MemoryDetailComponent implements OnInit, OnDestroy {
     this.activeTab = data;
     if (this.activeTab.heading === 'Обговорення' && this.userJwt && this.memoryId) {
       // this.loadMessages();
-      this.messageService.createHubConnection(this.userJwt, this.memoryId);
+      this.messageService.createHubConnection(this.userJwt, this.memoryId); // here we get messages via signalR
+    }
+    else {
+      this.messageService.stopHubConnection();
     }
 
-    if (this.activeTab.heading === 'Учасники') {
-      this.loadUsersInMemory();
+    if (this.activeTab.heading === 'Учасники' && this.userJwt && this.memoryId) {
+      this.memoryService.startHubConnection(this.userJwt, this.memoryId); // here we get usersInMemory via signalR
+      // this.loadUsersInMemory();
     }
+    else {
+      this.memoryService.stopHubConnection();
+    }
+
     if (this.activeTab.heading === 'Фото') {
       this.loadUsersInMemory();
     }
