@@ -1,5 +1,4 @@
 <div class="container">
-    <!-- code here -->
     <div class="card">
         <div class="card-image">
             <h2 class="card-heading">
@@ -19,11 +18,17 @@
             </div>
 
             <div class="input">
-                <input (change)="onFileSelected($event)" multiple type="file" class="input-field" required />
-                <label class="input-label">Фото</label>
-                <ul>
-                    <li *ngFor="let file of selectedFiles">{{ file.name }}</li>
-                  </ul>
+                <ngx-dropzone (change)="onSelect($event)">
+                    <ngx-dropzone-label>Кинь фотку!</ngx-dropzone-label>
+                    <ngx-dropzone-preview *ngFor="let f of selectedFiles" [removable]="true" (removed)="onRemove(f)">
+                      <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+                    </ngx-dropzone-preview>
+                  </ngx-dropzone>
+            </div>
+            <div class="image-container" *ngIf="lastAddedImage">
+                <div class="image-box" style="margin-left: 40%;">
+                    <img [src]="lastAddedImage" *ngIf="lastAddedImage" alt="Dropped Image">
+                </div>
             </div>
             <div class="action">
                 <button class="action-button" (click)="createMemory()">Додати Об'яву</button>
@@ -31,5 +36,7 @@
         </form>
     </div>
 </div>
+
+
 
 <app-qr-code-pop-up *ngIf="isPopUpActive" [imagePath]="imagePath"></app-qr-code-pop-up>

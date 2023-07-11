@@ -156,7 +156,7 @@ namespace API.Controllers
             return Ok();
         }
 
-        [HttpPost("add-user-to-memory")]
+        [HttpPost("add-user-to-memory")] // Replaced by SignalR
         public async Task<ActionResult> AddUserToMemory([FromBody] AddUserToMemoryDto addUserToMemoryDto)
         {
             string currentUsername = User.GetCurrentUserName();
@@ -192,7 +192,7 @@ namespace API.Controllers
                 return NotFound("User is not found");
             }
 
-            memory.Users.Add(user);  //TODO: is this a correct logic
+            memory.Users.Add(user);  
             user.Memories.Add(memory);
 
             await _repositoryManager.SaveAsync();

@@ -78,7 +78,7 @@ export class MemoryDetailComponent implements OnInit, OnDestroy {
         height: '600px',
         imagePercent: 100,
         thumbnailsColumns: 4,
-        imageAnimation: NgxGalleryAnimation.Zoom,
+        imageAnimation: NgxGalleryAnimation.Fade,
         preview: false
       },
     ]

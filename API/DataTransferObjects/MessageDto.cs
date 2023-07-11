@@ -13,6 +13,5 @@ namespace API.DataTransferObjects
         public string SenderUsername { get; set; }
         public string Text { get; set; }
         public DateTime DateSend { get; set; }
-        
     }
 }

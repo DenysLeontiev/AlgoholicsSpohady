@@ -1,0 +1,19 @@
+<div class="row col-12">
+    <div *ngFor="let likedMemory of likedMemories" class="col-2">
+        <app-liked-memory [likedMemory]="likedMemory"></app-liked-memory>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="pagination">
+    <pagination [boundaryLinks]="true" 
+                [totalItems]="pagination.totalItems" 
+                [itemsPerPage]="pagination.itemsPerPage"
+                [maxSize]="8"
+                [(ngModel)]="pagination.currentPage"
+                (pageChanged)="pageChanged($event)"
+                previousText="&lsaquo;" 
+                nextText="&rsaquo;" 
+                firstText="&laquo;"
+                lastText="&raquo;">
+    </pagination>
+</div>

@@ -11,8 +11,6 @@ namespace API.ExtensionMethods
         public static string GetCurrentUserName(this ClaimsPrincipal user) //NameId == ClaimTypes.Name
         {
             return user.FindFirst("name")?.Value;
-
-            
         }
 
         public static string GetUserId(this ClaimsPrincipal user)

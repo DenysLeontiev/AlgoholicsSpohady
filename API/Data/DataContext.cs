@@ -19,6 +19,7 @@ namespace API.Data
         public DbSet<Memory> Memories { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<UserMemory> UserMemories { get; set; }
+        public DbSet<UserLike> UserLikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -28,19 +29,25 @@ namespace API.Data
                    .HasMany(m => m.Memories)
                    .WithMany(u => u.Users)
                    .UsingEntity<UserMemory>();
-            
+
             builder.Entity<Memory>()
                    .HasMany(m => m.Users)
                    .WithMany(u => u.Memories)
                    .UsingEntity<UserMemory>();
 
+            builder.Entity<User>()
+                    .HasMany(e => e.LikedMemories)
+                    .WithMany(e => e.LikedByUsers)
+                    .UsingEntity<UserLike>();
+
+            builder.Entity<Memory>()
+            .HasMany(e => e.LikedByUsers)
+            .WithMany(e => e.LikedMemories)
+            .UsingEntity<UserLike>();
+
             builder.Entity<Memory>()
              .HasMany(x => x.Messages)
              .WithOne(x => x.Memory);
-
-            // builder.Entity<Memory>()
-            //         .HasMany(x => x.Messages)
-            //         .WithOne(x => x.Memory);
         }
     }
 }

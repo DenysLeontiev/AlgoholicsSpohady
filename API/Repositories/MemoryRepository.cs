@@ -28,7 +28,7 @@ namespace API.Repositories
             Delete(memory);
         }
 
-        public PagedList<Memory> GetAllMemoriesAsync([FromQuery] UserParams userParam, bool trackChanges)
+        public PagedList<Memory> GetAllMemoriesAsync([FromQuery] UserParams userParam, bool trackChanges) // TODO: Also Inclued LikedByUsers???
         {
             var query = _context.Memories.Include(u => u.Users)
                                          .Include(p => p.Photos)
@@ -44,7 +44,7 @@ namespace API.Repositories
             //                                   .ToListAsync();
         }
 
-        public async Task<PagedList<Memory>> GetAllMemoriesForUserAsync(UserParams userParams, string id)
+        public async Task<PagedList<Memory>> GetAllMemoriesForUserAsync(UserParams userParams, string id) // TODO: Also Inclued LikedByUsers???
         {
             var user = await _context.Users.Include(m => m.Memories)
                                            .ThenInclude(p => p.Photos)
@@ -68,7 +68,18 @@ namespace API.Repositories
             return PagedList<Memory>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
         }
 
-        public async Task<Memory> GetMemoryByIdAsync(string id, bool trackChanges)
+        public async Task<PagedList<Memory>> GetLikedMemoriesForUserAsync(UserParams userParams, string userName)
+        {
+            var user = await _context.Users.Include(x => x.LikedMemories)
+                                           .ThenInclude(p => p.Photos) // here we get first photo
+                                           .FirstOrDefaultAsync(x => x.UserName.Equals(userName));
+            
+            var likedMemories = user.LikedMemories;
+
+            return PagedList<Memory>.CreateAsync(likedMemories, userParams.PageNumber, userParams.PageSize);
+        }
+
+        public async Task<Memory> GetMemoryByIdAsync(string id, bool trackChanges) // TODO: Also Inclued LikedByUsers???
         {
             return await _context.Memories.Include(x => x.Users)
                                           .Include(x => x.Photos)

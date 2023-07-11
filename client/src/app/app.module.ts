@@ -25,6 +25,9 @@ import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { QrCodePopUpComponent } from './qr-code-pop-up/qr-code-pop-up.component';
 import { MessagesComponent } from './messages/messages.component';
+import { NgxDropzoneModule } from 'ngx-dropzone';
+import { LikedMemoriesListComponent } from './liked-memories-list/liked-memories-list.component';
+import { LikedMemoryComponent } from './liked-memory/liked-memory.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +44,8 @@ import { MessagesComponent } from './messages/messages.component';
     TextInputComponent,
     QrCodePopUpComponent,
     MessagesComponent,
+    LikedMemoriesListComponent,
+    LikedMemoryComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,6 +65,7 @@ import { MessagesComponent } from './messages/messages.component';
     ReactiveFormsModule,
     BsDropdownModule.forRoot(),
     PaginationModule.forRoot(),
+    NgxDropzoneModule,
   ],
   providers: [
     SocialAuthService,

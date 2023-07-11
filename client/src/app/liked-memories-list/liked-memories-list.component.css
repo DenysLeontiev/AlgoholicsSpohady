@@ -1,0 +1,38 @@
+.sort-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+.sort-option:hover {
+    background-color: #f5f5f5;
+}
+
+.arrow-up::after,
+.arrow-down::after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    content: "";
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    margin-left: 4px;
+}
+
+.arrow-up::after {
+    border-bottom: 5px solid #000;
+}
+
+.arrow-down::after {
+    border-top: 5px solid #000;
+}
+
+.sort-label {
+    margin-left: 4px;
+    font-weight: bold;
+}

@@ -5,10 +5,10 @@
         <ul class="navbar-nav me-auto">
             <ng-container *ngIf="accountService.currentUser$ | async">
                 <li class="nav-item">
-                    <a class="nav-link" routerLink='/members' routerLinkActive='active'>На головну</a>
+                    <a class="nav-link" routerLink='/memories' routerLinkActive='active'>Мої спогади</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" routerLink='/memories' routerLinkActive='active'>Мої спогади</a>
+                    <a class="nav-link" routerLink='/liked-memories' routerLinkActive='active'>Улюблені спогади</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" routerLink='/add-memory' routerLinkActive='active'>Створити спогад</a>

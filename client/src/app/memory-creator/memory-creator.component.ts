@@ -12,10 +12,11 @@ import { Memory } from '../_models/memory';
 })
 export class MemoryCreatorComponent implements OnInit {
 
-  isPopUpActive: boolean = false;
+  isPopUpActive: boolean = false; // to display pop up window with QrCode when new Spohad is Created
   imagePath: SafeResourceUrl = "";
   selectedFiles: File[] = [];
-  
+  lastAddedImage: string | SafeResourceUrl = ""; // last image we have added to diplay that for user
+
   memoryForCreation: MemoryForCreation = {
     title: '',
     description: '',
@@ -25,13 +26,6 @@ export class MemoryCreatorComponent implements OnInit {
   constructor(private memoryService: MemoryService, private toastr: ToastrService, private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
-  }
-
-  onFileSelected(event: any) {
-    const files = event.target.files;
-    for (let i = 0; i < files.length; i++) {
-      this.selectedFiles.push(files[i]);
-    }
   }
 
   createMemory() {
@@ -61,4 +55,28 @@ export class MemoryCreatorComponent implements OnInit {
     })
   }
 
+  onSelect(event: any) {
+    console.log(event);
+    this.selectedFiles.push(...event.addedFiles);
+
+    const formData = new FormData();
+
+    for (var i = 0; i < this.selectedFiles.length; i++) {
+      formData.append("files", this.selectedFiles[i], this.selectedFiles[i].name);
+    }
+
+    const file = event.addedFiles[0]; // Assuming only one file is dropped
+
+    // Read the file and create a URL for the image
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.lastAddedImage = this.sanitizer.bypassSecurityTrustResourceUrl(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  onRemove(event: any) {
+    console.log(event);
+    this.selectedFiles.splice(this.selectedFiles.indexOf(event), 1);
+  }
 }

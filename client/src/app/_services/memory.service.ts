@@ -122,6 +122,10 @@ export class MemoryService {
     return this.httpClient.post(this.baseUrl + "memories/update-memory/" + memoryId, model);
   }
 
+  likeMemory(memoryId: string) {
+    return this.httpClient.post(this.baseUrl + 'likes/'+ memoryId, {});
+  }
+
   // setNewOwner(memoryId: string, newOwnerId: string) {
   //   return this.httpClient.post(this.baseUrl + "memories/set-new-owner/" + memoryId + "/" + newOwnerId, {});
   // }

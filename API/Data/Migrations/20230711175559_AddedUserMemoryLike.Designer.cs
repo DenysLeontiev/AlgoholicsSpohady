@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230711175559_AddedUserMemoryLike")]
+    partial class AddedUserMemoryLike
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
@@ -104,17 +107,25 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("MemoryId")
+                    b.Property<string>("LikedByUserId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("LikedByUsersId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LikedMemoriesId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LikedMemoryId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MemoryId");
+                    b.HasIndex("LikedByUsersId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("LikedMemoriesId");
 
                     b.ToTable("UserLikes");
                 });
@@ -373,13 +384,17 @@ namespace API.Data.Migrations
 
             modelBuilder.Entity("API.Entities.UserLike", b =>
                 {
-                    b.HasOne("API.Entities.Memory", null)
-                        .WithMany()
-                        .HasForeignKey("MemoryId");
-
                     b.HasOne("API.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("LikedByUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.Memory", null)
+                        .WithMany()
+                        .HasForeignKey("LikedMemoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("API.Entities.UserMemory", b =>

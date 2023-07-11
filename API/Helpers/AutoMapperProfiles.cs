@@ -16,6 +16,9 @@ namespace API.Helpers
 
             CreateMap<Memory, MemoryDto>().ReverseMap();
 
+            // here we return only one photo (first photo)
+            CreateMap<Memory, LikedMemoryDto>().ForMember(dest => dest.Photo, opts => opts.MapFrom(src => src.Photos.FirstOrDefault()));
+
             CreateMap<Photo, PhotoDto>().ReverseMap();
 
             CreateMap<Message, MessageDto>().ReverseMap();
